@@ -1,0 +1,20 @@
+{
+  "name": "purescript-book-chapter2",
+  "description": "Chapter 2 - Getting Started",
+  "keywords": ["purescript"],
+  "ignore": [
+    "**/.*",
+    "bower_components",
+    "node_modules",
+    "output",
+    "tests",
+    "js",
+    "tmp",
+    "bower.json",
+    "Gruntfile.js",
+    "package.json"
+  ],
+  "dependencies": {
+    "purescript-math": "0.1.0"
+  }
+}

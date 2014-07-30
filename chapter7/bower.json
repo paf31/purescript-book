@@ -1,0 +1,27 @@
+{
+  "name": "purescript-book-chapter7",
+  "description": "Applicative Validation",
+  "keywords": ["purescript"],
+  "ignore": [
+    "**/.*",
+    "bower_components",
+    "node_modules",
+    "output",
+    "tests",
+    "js",
+    "tmp",
+    "bower.json",
+    "Gruntfile.js",
+    "package.json"
+  ],
+  "dependencies": {
+    "purescript-arrays"                   : "*",
+    "purescript-tuples"                   : "*",
+    "purescript-monoid"                   : "*",
+    "purescript-either"                   : "*",
+    "purescript-strings"                  : "*",
+    "purescript-control"                  : "*",
+    "purescript-validation"               : "*",
+    "purescript-foldable-traversable"     : "*"
+  }
+}
