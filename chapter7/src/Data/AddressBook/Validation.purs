@@ -38,7 +38,7 @@ phoneNumberRegex =
 
 matches :: String -> R.Regex -> String -> V Errors Unit
 matches _     regex value | R.test regex value = pure unit
-matches field r     v     = invalid ["Field '" ++ show r ++ show v ++ "' did not match the required format"]
+matches field _     _     = invalid ["Field '" ++ field ++ "' did not match the required format"]
 
 validateAddress :: Address -> V Errors Address 
 validateAddress (Address o) = 
