@@ -4,11 +4,15 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
 
-    srcFiles: ["src/**/*.purs", "bower_components/**/src/**/*.purs"],
+    srcFiles: [
+      "src/**/*.purs", 
+      "../chapter7/src/**/*.purs", 
+      "bower_components/**/src/**/*.purs"
+    ],
 
     psc: {
       options: {
-        modules: ["Data.AddressBook", "Data.AddressBook.Validation"]
+        modules: ["Main"]
       },
       all: {
 	src: ["<%=srcFiles%>"],
