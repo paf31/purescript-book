@@ -2,14 +2,94 @@
 <html>
   <head>
     <title>Address Book</title>
-    <script src="jquery.js"></script>
+    
+    <link rel="stylesheet" href="../css/bootstrap.min.css"></link>
+    
+    <script src="../js/jquery.js"></script>
     <script src="../dist/Main.js"></script>
+    
     <script>
       $(function() {
         PS.Main.main();     
       });
     </script>
+    
+    <script type="text/html" id="phoneNumberTemplate">
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-3">
+          <input type="text" class="form-control inputPhoneNumber" placeholder="Phone Number">
+        </div>
+        <div class="col-sm-2">
+          <select class="form-control inputPhoneType">
+            <option>Home Phone</option>
+            <option>Cell Phone</option>
+            <option>Work Phone</option>
+            <option>Other Phone</option>
+          </select>
+        </div>
+      </div>
+    </script>
   </head>
   <body>
+    <div class="container">
+      <div class="row">  
+        <div id="validationErrors">
+        </div>
+      </div>
+      
+      <div class="row">  
+          
+        <form class="form-horizontal">
+            
+          <h3>Basic Information</h3>
+            
+          <div class="form-group">
+            <label for="inputFirstName" class="col-sm-2 control-label">First Name</label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control" id="inputFirstName" placeholder="First Name">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputLastName" class="col-sm-2 control-label">Last Name</label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control" id="inputLastName" placeholder="Last Name">
+            </div>
+          </div>
+
+          <h3>Address</h3>
+          
+          <div class="form-group">
+            <label for="inputStreet" class="col-sm-2 control-label">Street</label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control" id="inputStreet" placeholder="Street">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputCity" class="col-sm-2 control-label">City</label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control" id="inputCity" placeholder="City">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputState" class="col-sm-2 control-label">State</label>
+            <div class="col-sm-2">
+              <input type="text" class="form-control" id="inputState" placeholder="State">
+            </div>
+          </div>
+          
+          <h3>Phone Numbers</h3>
+          
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button class="btn btn-default" id="addPhoneNumber">Add Phone Number</button>
+            </div>
+          </div>
+          
+          <div id="phoneNumbers">
+            <!-- Populated in code -->
+          </div>
+        </form>
+      </div>
+    </div>
   </body>
 </html>

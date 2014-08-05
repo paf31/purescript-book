@@ -1,3 +1,12 @@
 module Main where
 
-main = Debug.Trace.trace "Done" 
+import Data.Array
+
+import Control.Monad.Eff
+import Debug.Trace
+
+import Data.AddressBook.UI
+
+main = do
+  trace "Attaching event handlers"
+  setupEventHandlers 
