@@ -73,13 +73,6 @@ foreign import addClass
 -- Properties
 --
 
-foreign import getText
-  "function getText(node) {\
-  \  return function() {\
-  \    return node.textContent;\
-  \  };\
-  \}" :: forall eff. Node -> Eff (dom :: DOM | eff) String 
-
 foreign import setText 
   "function setText(text) {\
   \  return function(node) {\

@@ -68,12 +68,6 @@ validateControls = do
  
   return unit
 
-fromTemplate :: forall eff. String -> Eff (dom :: DOM | eff) Node 
-fromTemplate templateId = do
-  Just template <- querySelector templateId
-  templateText <- getText template
-  createElement "div" >>= setInnerHTML templateText
-  
 setupEventHandlers :: forall eff. Eff (trace :: Trace, dom :: DOM | eff) Unit
 setupEventHandlers = do
   -- Listen for changes on form fields
