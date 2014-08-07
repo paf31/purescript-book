@@ -5,30 +5,13 @@
     
     <link rel="stylesheet" href="../css/bootstrap.min.css"></link>
     
-    <script src="../js/jquery.js"></script>
     <script src="../dist/Main.js"></script>
     
     <script>
-      $(function() {
+      onload = function() {
         PS.Main.main();     
-      });
-    </script>
-    
-    <script type="text/html" id="phoneNumberTemplate">
-      <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-3">
-          <input type="text" class="form-control inputPhoneNumber" placeholder="Phone Number">
-        </div>
-        <div class="col-sm-2">
-          <select class="form-control inputPhoneType">
-            <option>Home Phone</option>
-            <option>Cell Phone</option>
-            <option>Work Phone</option>
-            <option>Other Phone</option>
-          </select>
-        </div>
-      </div>
-    </script>
+      };
+    </script>  
   </head>
   <body>
     <div class="container">
@@ -80,14 +63,18 @@
           <h3>Phone Numbers</h3>
           
           <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-              <button class="btn btn-default" id="addPhoneNumber">Add Phone Number</button>
+            <label for="inputHomePhone" class="col-sm-2 control-label">Home Phone</label>
+            <div class="col-sm-2">
+              <input type="text" class="form-control" id="inputHomePhone" placeholder="xxx-xxx-xxxx">
             </div>
           </div>
-          
-          <div id="phoneNumbers">
-            <!-- Populated in code -->
+          <div class="form-group">
+            <label for="inputCellPhone" class="col-sm-2 control-label">Cell Phone</label>
+            <div class="col-sm-2">
+              <input type="text" class="form-control" id="inputCellPhone" placeholder="xxx-xxx-xxxx">
+            </div>
           </div>
+
         </form>
       </div>
     </div>

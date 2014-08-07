@@ -1,5 +1,6 @@
 module Data.AddressBook.UI where
 
+import Data.Maybe
 import Data.Either
 import Data.Foreign
 import Data.AddressBook
@@ -10,37 +11,41 @@ import Data.Traversable
 import Control.Bind
 
 import Control.Monad.Eff
-import Control.Monad.JQuery
+import Control.Monad.Eff.DOM
 
 import Debug.Trace
 
 valueOf :: forall eff. String -> Eff (dom :: DOM | eff) String
 valueOf sel = do
-  e <- select sel
-  f <- getValue e
-  return $ case parseForeign read f of
-    Right s -> s
-    _ -> ""
+  maybeEl <- querySelector sel
+  case maybeEl of
+    Nothing -> return ""
+    Just el -> do
+      value <- getValue el
+      return $ case parseForeign read value of
+        Right s -> s
+        _ -> ""
 
 displayValidationErrors :: forall eff. [String] -> Eff (dom :: DOM | eff) Unit
 displayValidationErrors errs = do
-  alert <- create "<div>"
+  alert <- createElement "div"
     >>= addClass "alert" 
     >>= addClass "alert-danger"
 
-  ul <- create "<ul>"
-  ul `append` alert
+  ul <- createElement "ul"
+  ul `appendChild` alert
 
   for errs $ \err -> do
-    li <- create "<li>" >>= setText err
-    li `append` ul
+    li <- createElement "li" >>= setText err
+    li `appendChild` ul
     return unit
   
-  select "#validationErrors" >>= clear >>= append alert
+  Just validationErrors <- querySelector "#validationErrors"
+  alert `appendChild` validationErrors
   
   return unit
 
-validateControls :: forall eff. Eff (trace :: Trace, dom :: DOM | eff) Unit
+validateControls :: forall eff. Eff (trace :: Trace, dom :: DOM | eff) Unit 
 validateControls = do
   trace "Running validators"
   
@@ -49,39 +54,29 @@ validateControls = do
               <*> (address <$> valueOf "#inputStreet"
                            <*> valueOf "#inputCity"
                            <*> valueOf "#inputState")
-              <*> pure [phoneNumber HomePhone "555-555-5555"]
-              
+              <*> sequence [ phoneNumber HomePhone <$> valueOf "#inputHomePhone"
+			   , phoneNumber CellPhone <$> valueOf "#inputCellPhone"
+                           ]
+  
+  Just validationErrors <- querySelector "#validationErrors"	    
+  setInnerHTML "" validationErrors 
+  
   case validatePerson' p of
     Left errs -> displayValidationErrors errs
     Right result -> do
       print result
-  
-fromTemplate :: forall eff. String -> Eff (dom :: DOM | eff) JQuery
-fromTemplate = select >=> getText >=> create
-  
-createPhoneNumberElement :: forall eff. JQueryEvent -> Eff (trace :: Trace, dom :: DOM | eff) Unit
-createPhoneNumberElement e = do
-  trace "Creating phone number element"
-  
-  -- Look up the HTML template by ID
-  newElement <- fromTemplate "#phoneNumberTemplate" 
-  
-  -- Append the new element to the form
-  select "#phoneNumbers" >>= append newElement
-  
-  -- Prevent navigation
-  preventDefault e
+ 
+  return unit
 
+fromTemplate :: forall eff. String -> Eff (dom :: DOM | eff) Node 
+fromTemplate templateId = do
+  Just template <- querySelector templateId
+  templateText <- getText template
+  createElement "div" >>= setInnerHTML templateText
+  
 setupEventHandlers :: forall eff. Eff (trace :: Trace, dom :: DOM | eff) Unit
 setupEventHandlers = do
-  -- Select the body element
-  body <- select "body"
-  
   -- Listen for changes on form fields
-  on' "change" ".input" (\_ _ -> validateControls) body
-  
-  -- Listen for clicks on the Add Phone Number button
-  addPhoneNumber <- select "#addPhoneNumber"
-  on "click" (\e _ -> createPhoneNumberElement e) addPhoneNumber
+  body >>= addEventListener "change" validateControls 
   
   return unit
