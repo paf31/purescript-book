@@ -63,8 +63,7 @@ validateControls = do
   
   case validatePerson' p of
     Left errs -> displayValidationErrors errs
-    Right result -> do
-      print result
+    Right result -> print result
  
   return unit
 
