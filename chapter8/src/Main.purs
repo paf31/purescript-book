@@ -1,7 +1,5 @@
 module Main where
 
-import Data.Array
-
 import Control.Monad.Eff
 import Control.Monad.Eff.DOM (DOM())
 
