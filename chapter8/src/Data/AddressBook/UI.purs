@@ -35,7 +35,7 @@ displayValidationErrors errs = do
   ul <- createElement "ul"
   ul `appendChild` alert
 
-  for errs $ \err -> do
+  foreachE errs $ \err -> do
     li <- createElement "li" >>= setText err
     li `appendChild` ul
     return unit
