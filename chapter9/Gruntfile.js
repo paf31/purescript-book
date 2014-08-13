@@ -6,9 +6,7 @@ module.exports = function(grunt) {
 
     srcFiles: [
       "src/**/*.purs", 
-      "../chapter7/src/**/*.purs", 
-      "bower_components/**/src/**/*.purs",
-      "../dependencies/Control/Monad/Eff/DOM.purs"
+      "bower_components/**/src/**/*.purs"
     ],
 
     psc: {

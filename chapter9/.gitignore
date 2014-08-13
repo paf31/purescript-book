@@ -1,0 +1,6 @@
+.*
+!/.bowerrc
+!/.gitignore
+/dist/
+/node_modules/
+/bower_components/
