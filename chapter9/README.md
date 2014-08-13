@@ -1,6 +1,6 @@
-# purescript-book-chapter7
+# purescript-book-chapter9
 
-Applicative Validation
+Canvas Graphics
 
 ## Building
 
