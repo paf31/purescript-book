@@ -1,3 +1,4 @@
 module Main where
 
-main = Random.main
+main = Rectangle.main
+

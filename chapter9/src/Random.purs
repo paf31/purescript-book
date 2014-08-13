@@ -18,8 +18,8 @@ main = do
     r <- random
 
     let path = arc ctx 
-         { cx    : x * 600
-         , cy    : y * 600
+         { x     : x * 600
+         , y     : y * 600
          , r     : r * 50
          , start : 0
          , end   : Math.pi * 2 
