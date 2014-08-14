@@ -28,6 +28,10 @@ module.exports = function(grunt) {
       refs: {
 	src: ["src/Refs.purs", "<%=srcFiles%>"],
         dest: "dist/Main.js"
+      },
+      reader: {
+	src: ["src/Reader.purs", "<%=srcFiles%>"],
+        dest: "dist/Main.js"
       }
     },
 
@@ -39,5 +43,6 @@ module.exports = function(grunt) {
   grunt.registerTask("shapes",    ["psc:shapes"]);
   grunt.registerTask("random",    ["psc:random"]);
   grunt.registerTask("refs",      ["psc:refs"]);
+  grunt.registerTask("reader",    ["psc:reader"]);
   grunt.registerTask("default",   ["psc:rectangle", "dotPsci"]);
 };

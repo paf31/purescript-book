@@ -23,22 +23,28 @@ main = do
     modifyRef clickCount (\count -> count + 1)
 
     count <- readRef clickCount
-    
-    flip setFillStyle ctx $ 
-      case count % 3 of
-        0 -> "#FF0000" 
-	1 -> "#00FF00"
-        2 -> "#0000FF"
 
-    fillPath ctx $ do
-      moveTo ctx 300 300
-      arc ctx
-          { x     : 300
-          , y     : 300
-          , r     : 250
-          , start : Math.pi * (count - 1) / 4
-          , end   : Math.pi * count / 4
-          }
-      closePath ctx
+    setFillStyle "#FFFFFF" ctx
+
+    fillPath ctx $ rect ctx
+      { x: 0
+      , y: 0
+      , w: 600
+      , h: 600
+      }
+
+    setFillStyle "#00FF00" ctx 
+
+    withContext ctx $ do
+      translate { translateX:  300, translateY:  300 } ctx
+      rotate (count * Math.pi / 18) ctx
+      translate { translateX: -100, translateY: -100 } ctx
+
+      fillPath ctx $ rect ctx
+        { x: 0
+        , y: 0
+        , w: 200
+        , h: 200
+        }
 
     return unit

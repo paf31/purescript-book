@@ -25,6 +25,7 @@
     "purescript-foreign"                  : "*",
     "purescript-random"                   : "*",
     "purescript-math"                     : "*",
+    "purescript-transformers"             : "*",
     "purescript-foldable-traversable"     : "*"
   }
 }
