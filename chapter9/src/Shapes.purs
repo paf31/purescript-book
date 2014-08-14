@@ -1,4 +1,4 @@
-module Shapes where
+module Main where
 
 import Control.Monad.Eff
 

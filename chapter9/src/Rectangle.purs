@@ -1,4 +1,4 @@
-module Rectangle where
+module Main where
 
 import Control.Monad.Eff
 

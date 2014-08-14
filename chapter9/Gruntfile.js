@@ -5,7 +5,6 @@ module.exports = function(grunt) {
   grunt.initConfig({
 
     srcFiles: [
-      "src/**/*.purs", 
       "bower_components/**/src/**/*.purs"
     ],
 
@@ -13,8 +12,16 @@ module.exports = function(grunt) {
       options: {
         modules: ["Main"]
       },
-      all: {
-	src: ["<%=srcFiles%>"],
+      rectangle: {
+	src: ["src/Rectangle.purs", "<%=srcFiles%>"],
+        dest: "dist/Main.js"
+      },
+      shapes: {
+	src: ["src/Shapes.purs", "<%=srcFiles%>"],
+        dest: "dist/Main.js"
+      },
+      random: {
+	src: ["src/Random.purs", "<%=srcFiles%>"],
         dest: "dist/Main.js"
       }
     },
@@ -23,5 +30,8 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks("grunt-purescript");
-  grunt.registerTask("default", ["psc:all", "dotPsci"]);
+  grunt.registerTask("rectangle", ["psc:rectangle"]);
+  grunt.registerTask("shapes",    ["psc:shapes"]);
+  grunt.registerTask("random",    ["psc:random"]);
+  grunt.registerTask("default",   ["psc:rectangle", "dotPsci"]);
 };
