@@ -20,6 +20,7 @@
     "purescript-monoid"                   : "*",
     "purescript-either"                   : "*",
     "purescript-canvas"                   : "*",
+    "purescript-refs"                     : "*",
     "purescript-control"                  : "*",
     "purescript-foreign"                  : "*",
     "purescript-random"                   : "*",

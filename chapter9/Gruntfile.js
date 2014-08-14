@@ -5,7 +5,8 @@ module.exports = function(grunt) {
   grunt.initConfig({
 
     srcFiles: [
-      "bower_components/**/src/**/*.purs"
+      "bower_components/**/src/**/*.purs",
+      "../dependencies/Control/Monad/Eff/DOM.purs"
     ],
 
     psc: {
@@ -23,6 +24,10 @@ module.exports = function(grunt) {
       random: {
 	src: ["src/Random.purs", "<%=srcFiles%>"],
         dest: "dist/Main.js"
+      },
+      refs: {
+	src: ["src/Refs.purs", "<%=srcFiles%>"],
+        dest: "dist/Main.js"
       }
     },
 
@@ -33,5 +38,6 @@ module.exports = function(grunt) {
   grunt.registerTask("rectangle", ["psc:rectangle"]);
   grunt.registerTask("shapes",    ["psc:shapes"]);
   grunt.registerTask("random",    ["psc:random"]);
+  grunt.registerTask("refs",      ["psc:refs"]);
   grunt.registerTask("default",   ["psc:rectangle", "dotPsci"]);
 };
