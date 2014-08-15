@@ -24,7 +24,7 @@ showShape (Rectangle c w h) =
   "Rectangle [center: " ++ showPoint c ++ ", width: " ++ show w ++ ", height: " ++ show h ++ "]"
 showShape (Line start end) = 
   "Line [start: " ++ showPoint start ++ ", end: " ++ showPoint end ++ "]"
-showShape (Circle loc text) = 
+showShape (Text loc text) = 
   "Text [location: " ++ showPoint loc ++ ", text: " ++ show text ++ "]"
 
 type Picture = [Shape]
