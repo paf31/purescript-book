@@ -13,9 +13,9 @@ lsystem :: forall a m s. (Monad m) =>
 		         (s -> a -> m s) ->
                          Number ->
 		         s -> m s  
-lsystem init prod render n state = go init n
+lsystem init prod interpret n state = go init n
   where
-  go s 0 = foldM render state s 	       
+  go s 0 = foldM interpret state s 	       
   go s n = go (concatMap prod s) (n - 1)
 
 data Alphabet = L | R | F
