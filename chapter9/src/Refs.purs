@@ -24,11 +24,12 @@ render count ctx = do
   setFillStyle "#00FF00" ctx 
 
   withContext ctx $ do
-    let newScale = Math.sin (count * Math.pi / 4) + 1.5
+    let scaleX = Math.sin (count * Math.pi / 4) + 1.5
+    let scaleY = Math.sin (count * Math.pi / 6) + 1.5
 
     translate { translateX:  300, translateY:  300 } ctx
     rotate (count * Math.pi / 18) ctx
-    scale { scaleX: newScale, scaleY: newScale } ctx 
+    scale { scaleX: scaleX, scaleY: scaleY } ctx 
     translate { translateX: -100, translateY: -100 } ctx
 
     fillPath ctx $ rect ctx
