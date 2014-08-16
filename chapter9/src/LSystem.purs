@@ -41,10 +41,10 @@ main = do
     productions R = [R]
     productions F = [F, L, F, R, R, F, L, F]
 
-    render :: State -> Alphabet -> Eff (canvas :: Canvas) State
-    render state L = return $ state { theta = state.theta - Math.pi / 3 }
-    render state R = return $ state { theta = state.theta + Math.pi / 3 }
-    render state F = do
+    interpret :: State -> Alphabet -> Eff (canvas :: Canvas) State
+    interpret state L = return $ state { theta = state.theta - Math.pi / 3 }
+    interpret state R = return $ state { theta = state.theta + Math.pi / 3 }
+    interpret state F = do
       let x' = state.x + Math.cos state.theta * 1.5 
           y' = state.y + Math.sin state.theta * 1.5
       moveTo ctx state.x state.y
@@ -56,4 +56,4 @@ main = do
 
   setStrokeStyle "#000000" ctx
 
-  strokePath ctx $ lsystem initial productions render 5 initialState 
+  strokePath ctx $ lsystem initial productions interpret 5 initialState 
