@@ -10,11 +10,41 @@ import Graphics.Canvas
 
 import Debug.Trace
 
+render :: forall eff. Number -> Context2D -> Eff (canvas :: Canvas | eff) Context2D
+render count ctx = do
+  setFillStyle "#FFFFFF" ctx
+
+  fillPath ctx $ rect ctx
+    { x: 0
+    , y: 0
+    , w: 600
+    , h: 600
+    }
+  
+  setFillStyle "#00FF00" ctx 
+
+  withContext ctx $ do
+    let newScale = Math.sin (count * Math.pi / 4) + 1.5
+
+    translate { translateX:  300, translateY:  300 } ctx
+    rotate (count * Math.pi / 18) ctx
+    scale { scaleX: newScale, scaleY: newScale } ctx 
+    translate { translateX: -100, translateY: -100 } ctx
+
+    fillPath ctx $ rect ctx
+      { x: 0
+      , y: 0
+      , w: 200
+      , h: 200
+      }
+
 main = do
   canvas <- getCanvasElementById "canvas"
   ctx <- getContext2D canvas
 
   clickCount <- newRef 0
+
+  render 0 ctx
 
   node <- querySelector "#canvas"
   for node $ addEventListener "click" $ do
@@ -24,27 +54,6 @@ main = do
 
     count <- readRef clickCount
 
-    setFillStyle "#FFFFFF" ctx
-
-    fillPath ctx $ rect ctx
-      { x: 0
-      , y: 0
-      , w: 600
-      , h: 600
-      }
-
-    setFillStyle "#00FF00" ctx 
-
-    withContext ctx $ do
-      translate { translateX:  300, translateY:  300 } ctx
-      rotate (count * Math.pi / 18) ctx
-      translate { translateX: -100, translateY: -100 } ctx
-
-      fillPath ctx $ rect ctx
-        { x: 0
-        , y: 0
-        , w: 200
-        , h: 200
-        }
+    render count ctx
 
     return unit
