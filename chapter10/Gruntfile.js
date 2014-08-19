@@ -5,8 +5,11 @@ module.exports = function(grunt) {
   grunt.initConfig({
 
     srcFiles: [
-      "src/**/*.purs", 
+      "src/**/*.purs",
+      "../chapter7/src/**/*.purs",
+      "../chapter8/src/**/Data/AddressBook/UI.purs",
       "bower_components/**/src/**/*.purs",
+      "../dependencies/Control/Monad/Eff/DOM.purs"
     ],
 
     psc: {
@@ -15,13 +18,23 @@ module.exports = function(grunt) {
       },
       all: {
 	src: ["<%=srcFiles%>"],
-        dest: "dist/Main.js"
+        dest: "html/dist/Main.js"
       }
     },
 
-    dotPsci: ["<%=srcFiles%>"]
+    dotPsci: ["<%=srcFiles%>"],
+
+    connect: {
+      html: {
+        options: {
+          base: "html",
+          keepalive: true
+        } 
+      }
+    }
   });
 
   grunt.loadNpmTasks("grunt-purescript");
-  grunt.registerTask("default", ["psc:all", "dotPsci"]);
+  grunt.loadNpmTasks("grunt-contrib-connect");
+  grunt.registerTask("default", ["psc:all", "dotPsci", "connect:html"]);
 };

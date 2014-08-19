@@ -9,6 +9,7 @@
   "dependencies": {
     "grunt": "~0.4.4",
     "grunt-contrib-copy": "~0.5.0",
+    "grunt-contrib-connect": "~0.8.0",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-execute": "~0.1.5",
     "grunt-purescript": "~0.5.0"

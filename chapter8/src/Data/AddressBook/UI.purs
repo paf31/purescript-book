@@ -45,7 +45,7 @@ displayValidationErrors errs = do
   
   return unit
 
-validateControls :: forall eff. Eff (trace :: Trace, dom :: DOM | eff) Unit 
+validateControls :: forall eff. Eff (trace :: Trace, dom :: DOM | eff) (Either [String] Person)  
 validateControls = do
   trace "Running validators"
   
@@ -58,10 +58,16 @@ validateControls = do
 			   , phoneNumber CellPhone <$> valueOf "#inputCellPhone"
                            ]
   
+  return $ validatePerson' p
+
+validateAndUpdateUI :: forall eff. Eff (trace :: Trace, dom :: DOM | eff) Unit
+validateAndUpdateUI = do
   Just validationErrors <- querySelector "#validationErrors"	    
   setInnerHTML "" validationErrors 
   
-  case validatePerson' p of
+  errorsOrResult <- validateControls
+
+  case errorsOrResult of
     Left errs -> displayValidationErrors errs
     Right result -> print result
  
@@ -70,6 +76,6 @@ validateControls = do
 setupEventHandlers :: forall eff. Eff (trace :: Trace, dom :: DOM | eff) Unit
 setupEventHandlers = do
   -- Listen for changes on form fields
-  body >>= addEventListener "change" validateControls 
+  body >>= addEventListener "change" validateAndUpdateUI 
   
   return unit
