@@ -4,6 +4,7 @@ import Data.Maybe
 import Data.Array (length)
 import Data.Either
 import Data.Foreign
+import Data.Foreign.Class
 import Data.JSON
 import Data.AddressBook
 import Data.AddressBook.UI
@@ -36,17 +37,17 @@ newtype FormData = FormData
   , cellPhone  :: String
   }
 
-instance readForeignFormData :: ReadForeign FormData where
-  read = do
-    firstName   <- prop "firstName"
-    lastName    <- prop "lastName"
+instance readForeignFormData :: IsForeign FormData where
+  read value = do
+    firstName   <- readProp "firstName" value
+    lastName    <- readProp "lastName"  value
 
-    street      <- prop "street"
-    city        <- prop "city"
-    state       <- prop "state"
+    street      <- readProp "street"    value
+    city        <- readProp "city"      value
+    state       <- readProp "state"     value
 
-    homePhone   <- prop "homePhone"
-    cellPhone   <- prop "cellPhone"
+    homePhone   <- readProp "homePhone" value
+    cellPhone   <- readProp "cellPhone" value
     
     return $ FormData
       { firstName  : firstName
@@ -88,7 +89,7 @@ loadSavedData :: forall eff. Eff (trace :: Trace, alert :: Alert, dom :: DOM, st
 loadSavedData = do
   json <- getItem "person"
 
-  case parseJSON json of
+  case readJSON json of
     Left _ -> return unit
     Right (FormData o) -> do
       updateForm "#inputFirstName" o.firstName

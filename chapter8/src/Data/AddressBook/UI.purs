@@ -3,6 +3,7 @@ module Data.AddressBook.UI where
 import Data.Maybe
 import Data.Either
 import Data.Foreign
+import Data.Foreign.Class
 import Data.AddressBook
 import Data.AddressBook.Validation
 
@@ -22,7 +23,7 @@ valueOf sel = do
     Nothing -> return ""
     Just el -> do
       value <- getValue el
-      return $ case parseForeign read value of
+      return $ case read value of
         Right s -> s
         _ -> ""
 
