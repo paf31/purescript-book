@@ -22,7 +22,7 @@
     "purescript-canvas"                   : "~0.1.4",
     "purescript-refs"                     : "*",
     "purescript-control"                  : "*",
-    "purescript-foreign"                  : "~0.1.7",
+    "purescript-foreign"                  : "~0.2.0",
     "purescript-random"                   : "*",
     "purescript-math"                     : "*",
     "purescript-transformers"             : "*",
