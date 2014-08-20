@@ -1,6 +1,6 @@
 module Data.AddressBook where
 
-data Address = Address 
+newtype Address = Address 
   { street :: String
   , city   :: String 
   , state  :: String
@@ -19,7 +19,7 @@ data PhoneType
   | CellPhone
   | OtherPhone
 
-data PhoneNumber = PhoneNumber 
+newtype PhoneNumber = PhoneNumber 
   { "type" :: PhoneType
   , number :: String
   }
@@ -30,7 +30,7 @@ phoneNumber ty number = PhoneNumber
   , number: number
   }
 
-data Person = Person
+newtype Person = Person
   { firstName :: String
   , lastName  :: String
   , address   :: Address

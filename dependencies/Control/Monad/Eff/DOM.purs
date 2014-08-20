@@ -90,6 +90,16 @@ foreign import getValue
   \  };\
   \}" :: forall eff. Node -> Eff (dom :: DOM | eff) Foreign
 
+foreign import setValue 
+  "function setValue(value) {\
+  \  return function(node) {\
+  \    return function() {\
+  \      node.value = value;\
+  \      return node;\
+  \    };\
+  \  };\
+  \}" :: forall a eff. a -> Node -> Eff (dom :: DOM | eff) Node 
+
 foreign import setInnerHTML 
   "function setInnerHTML(html) {\
   \  return function(node) {\
@@ -111,6 +121,7 @@ foreign import addEventListener
   \      return function() {\
   \        node.addEventListener(name, function(e) {\
   \          handler();\
+  \          e.preventDefault();\
   \        });\
   \      };\
   \    };\

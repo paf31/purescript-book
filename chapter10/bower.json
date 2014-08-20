@@ -15,5 +15,6 @@
     "package.json"
   ],
   "dependencies": {
+    "purescript-foreign": "~0.1.6"
   }
 }
