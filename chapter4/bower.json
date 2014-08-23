@@ -15,7 +15,7 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-arrays"               : "*",
+    "purescript-arrays"               : ">=0.2.1",
     "purescript-maybe"                : "*",
     "purescript-strings"              : "*",
     "purescript-foldable-traversable" : "*"
