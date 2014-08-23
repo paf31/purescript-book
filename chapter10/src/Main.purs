@@ -113,7 +113,7 @@ validateAndSaveEntry = do
   case errorsOrResult of
     Left errs -> alert $ "There are " ++ show (length errs) ++ " validation errors."
     Right result -> do
-      setItem "person" (stringify (toFormData result))
+      setItem "person" $ stringify $ toForeign $ toFormData result
       alert "Saved"
 
   return unit
