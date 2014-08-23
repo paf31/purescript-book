@@ -82,9 +82,11 @@ loadSavedData :: forall eff. Eff (trace :: Trace, alert :: Alert, dom :: DOM, st
 loadSavedData = do
   item <- getItem "person"
 
-  let savedData = do
-        jsonOrNull <- read item	  
-        traverse readJSON (runNull jsonOrNull)
+  let
+    savedData :: F (Maybe FormData) 
+    savedData = do
+      jsonOrNull <- read item	  
+      traverse readJSON (runNull jsonOrNull)
 
   case savedData of
     Left err -> alert $ "Unable to read saved form data: " ++ show err
