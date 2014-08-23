@@ -11,19 +11,10 @@ import Data.AddressBook.UI
 
 import Control.Monad.Eff
 import Control.Monad.Eff.DOM
+import Control.Monad.Eff.Alert
 import Control.Monad.Eff.Storage
 
 import Debug.Trace
-
-foreign import data Alert :: !
-
-foreign import alert
-  "function alert(msg) {\
-  \  return function() {\
-  \    window.alert(msg);\
-  \    return {};\
-  \  };\
-  \}" :: forall eff. String -> Eff (alert :: Alert | eff) Unit
 
 newtype FormData = FormData
   { firstName  :: String
@@ -118,7 +109,7 @@ validateAndSaveEntry = do
 
   return unit
 
-main :: forall eff. Eff (trace :: Trace, alert :: Main.Alert, dom :: DOM, storage :: Storage | eff) Unit
+main :: forall eff. Eff (trace :: Trace, alert :: Alert, dom :: DOM, storage :: Storage | eff) Unit
 main = do
   trace "Loading data from local storage"
   loadSavedData
