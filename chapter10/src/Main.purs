@@ -30,7 +30,7 @@ newtype FormData = FormData
   , cellPhone  :: String
   }
 
-instance readForeignFormData :: IsForeign FormData where
+instance formDataIsForeign :: IsForeign FormData where
   read value = do
     firstName   <- readProp "firstName" value
     lastName    <- readProp "lastName"  value
