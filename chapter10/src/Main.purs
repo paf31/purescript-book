@@ -4,8 +4,10 @@ import Data.Maybe
 import Data.Array (length)
 import Data.Either
 import Data.Foreign
+import Data.Foreign.Null
 import Data.Foreign.Class
 import Data.JSON
+import Data.Traversable
 import Data.AddressBook
 import Data.AddressBook.UI
 
@@ -78,11 +80,16 @@ updateForm sel value = do
 
 loadSavedData :: forall eff. Eff (trace :: Trace, alert :: Alert, dom :: DOM, storage :: Storage | eff) Unit
 loadSavedData = do
-  json <- getItem "person"
+  item <- getItem "person"
 
-  case readJSON json of
-    Left _ -> return unit
-    Right (FormData o) -> do
+  let savedData = do
+        jsonOrNull <- read item	  
+        traverse readJSON (runNull jsonOrNull)
+
+  case savedData of
+    Left err -> alert $ "Unable to read saved form data: " ++ show err
+    Right Nothing -> return unit
+    Right (Just (FormData o)) -> do
       updateForm "#inputFirstName" o.firstName
       updateForm "#inputLastName"  o.lastName
 

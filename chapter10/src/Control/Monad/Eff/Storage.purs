@@ -1,5 +1,7 @@
 module Control.Monad.Eff.Storage where
 
+import Data.Foreign
+
 import Control.Monad.Eff
 
 foreign import data Storage :: !
@@ -18,4 +20,4 @@ foreign import getItem
   \  return function() {\
   \    return window.localStorage.getItem(key);\
   \  }\
-  \}" :: forall eff. String -> Eff (storage :: Storage | eff) String 
+  \}" :: forall eff. String -> Eff (storage :: Storage | eff) Foreign 
