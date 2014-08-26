@@ -1,6 +1,6 @@
-# purescript-book-chapter10
+# purescript-book-chapter7
 
-Monad Transformers
+Applicative Validation
 
 ## Building
 

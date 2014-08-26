@@ -1,6 +1,6 @@
-# purescript-book-chapter7
+# purescript-book-chapter8
 
-Applicative Validation
+The Eff Monad
 
 ## Building
 
