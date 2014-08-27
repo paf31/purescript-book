@@ -88,8 +88,12 @@ game ["use", item] =
         then use gameItem
         else tell ["You don't have that item."]
 game ["debug"] = do
-  state <- get
-  tell [show state]
+  GameEnvironment env <- ask
+  if env.debugMode
+    then do
+      state <- get
+      tell [show state]
+    else tell ["Not running in debug mode."]  
 game [] = return unit
 game _  = tell ["I don't understand."]
 
