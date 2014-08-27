@@ -2,6 +2,7 @@ module Main where
 
 import Data.Maybe
 import Data.String
+import Data.Either
 
 import Data.Coords
 import Data.GameItem
@@ -44,7 +45,7 @@ runGame env = do
 main = Y.runY (Y.usage "$0 -p <player name>") $ 
   let env = gameEnvironment <$> Y.yarg "p" ["player"] 
                                        (Just "Player name") 
-                                       (Just "The player name is required") 
+                                       (Right "The player name is required") 
                                        false
                             <*> Y.flag "d" ["debug"]
                                        (Just "Use debug mode")
