@@ -20,6 +20,6 @@
     "purescript-refs":           "~0.1.1",
     "purescript-maps":           "~0.0.4",
     "purescript-yargs":          "~0.1.1",
-    "purescript-node-readline":  "~0.1.0"
+    "purescript-node-readline":  "~0.1.1"
   }
 }
