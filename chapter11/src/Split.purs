@@ -1,9 +1,10 @@
 module Split where
 
-import Data.String (take, drop)
+import Data.String (take, drop, toUpper, toLower)
 import Data.Either
 import Data.Tuple
 
+import Control.MonadPlus
 import Control.Monad.State
 import Control.Monad.State.Class
 import Control.Monad.State.Trans
@@ -26,6 +27,26 @@ split = do
     _ -> do
      put (drop 1 s)
      return (take 1 s)
+
+eof :: Parser Unit
+eof = do
+  s <- get
+  tell ["The state is " ++ show s]
+  case s of
+    "" -> return unit
+    _ -> throwError "Expected end-of-file"
+
+upper :: Parser String
+upper = do
+  s <- split
+  guard $ toUpper s == s
+  return s
+
+lower :: Parser String
+lower = do
+  s <- split
+  guard $ toLower s == s
+  return s
 
 runParser :: forall a. Parser a -> String -> Either String (Tuple (Tuple a String) [String])
 runParser p s = runIdentity $ runErrorT $ runWriterT $ runStateT p s

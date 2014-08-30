@@ -31,8 +31,10 @@ pickUp item = do
   GameState state <- get
   case state.player `M.lookup` state.items of
     Just items | item `S.member` items -> do
-      put $ GameState state { items     = M.update (Just <<< S.delete item) state.player state.items
-                            , inventory = S.insert item state.inventory
+      let newItems = M.update (Just <<< S.delete item) state.player state.items
+          newInventory = S.insert item state.inventory
+      put $ GameState state { items     = newItems
+			    , inventory = newInventory
                             }
       tell ["You now have the " ++ show item]
     _ -> tell ["I don't see that item here."]
