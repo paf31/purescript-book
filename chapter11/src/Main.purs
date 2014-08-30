@@ -42,12 +42,13 @@ runGame env = do
 
   return unit
 
-main = 
-  let env = gameEnvironment <$> Y.yarg "p" ["player"] 
-                                       (Just "Player name") 
-                                       (Right "The player name is required") 
-                                       false
-                            <*> Y.flag "d" ["debug"]
-                                       (Just "Use debug mode")
-  in Y.runY (Y.usage "$0 -p <player name>") $ runGame <$> env
+main = Y.runY (Y.usage "$0 -p <player name>") $ runGame <$> env
+  where
+  env :: Y.Y GameEnvironment
+  env = gameEnvironment <$> Y.yarg "p" ["player"] 
+                                   (Just "Player name") 
+                                   (Right "The player name is required") 
+                                   false
+                        <*> Y.flag "d" ["debug"]
+                                   (Just "Use debug mode")
 
