@@ -15,7 +15,7 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-transformers":   "~0.1.0",
+    "purescript-transformers":   "~0.1.2",
     "purescript-strings":        "~0.2.1",
     "purescript-maps":           "~0.0.4",
     "purescript-yargs":          "~0.2.0",
