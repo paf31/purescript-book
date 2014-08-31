@@ -1,6 +1,6 @@
-# purescript-book-chapter11
+# purescript-book-chapter12
 
-Monadic Adventures
+Callback Hell
 
 ## Building
 

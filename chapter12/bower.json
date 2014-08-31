@@ -1,0 +1,20 @@
+{
+  "name": "purescript-book-chapter12",
+  "description": "Callback Hell",
+  "keywords": ["purescript"],
+  "ignore": [
+    "**/.*",
+    "bower_components",
+    "node_modules",
+    "output",
+    "tests",
+    "js",
+    "tmp",
+    "bower.json",
+    "Gruntfile.js",
+    "package.json"
+  ],
+  "dependencies": {
+    "purescript-transformers":   "~0.1.2"
+  }
+}
