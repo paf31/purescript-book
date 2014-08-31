@@ -1,5 +1,11 @@
 module Main where
 
-import Control.Monad.Eff
+import Data.Maybe
 
-main = return unit
+import Control.Monad.Eff
+import Control.Monad.Cont.Trans
+
+import Network.HTTP.Client
+
+main = runContT (getCont $ Request { host: "www.purescript.org", path: "/" })
+                Debug.Trace.print
