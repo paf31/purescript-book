@@ -1,16 +1,39 @@
 module Main where
 
-import Data.Array (map)
 import Data.Maybe
-import Data.String (joinWith)
+import Data.Array (map)
+import Data.Function (on)
+import Data.String (joinWith, length)
 
 import Control.Monad.Eff
+import Control.Monad.Eff.Ref
 import Control.Monad.Cont.Trans
 
 import Network.HTTP.Client
 
 import Debug.Trace
 
-main = runContT (getAll $ Request { host: "www.purescript.org", path: "/" }) $ \(Response chunks) -> do
-  let html = joinWith "" $ map runChunk chunks
-  trace html
+main = flip runContT print do
+  runParallel $ 
+    longest <$> Parallel (getResponseText purescript_org)
+            <*> Parallel (getResponseText try_purescript_org)
+  where
+  longest :: String -> String -> Ordering
+  longest = compare `on` length
+
+  getResponseText req = responseToString <$> getAll req
+
+  responseToString :: Response -> String
+  responseToString (Response chunks) = joinWith "" $ map runChunk chunks
+  
+  purescript_org :: Request
+  purescript_org = Request 
+    { host: "www.purescript.org"
+    , path: "/" 
+    }
+
+  try_purescript_org :: Request
+  try_purescript_org = Request
+    { host: "try.purescript.org"
+    , path: "/"
+    }
