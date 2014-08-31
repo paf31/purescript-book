@@ -7,6 +7,8 @@ import Data.String (joinWith, length)
 
 import Control.Monad.Eff
 import Control.Monad.Eff.Ref
+
+import Control.Monad.Parallel
 import Control.Monad.Cont.Trans
 
 import Network.HTTP.Client
