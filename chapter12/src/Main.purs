@@ -15,13 +15,17 @@ import Network.HTTP.Client
 
 import Debug.Trace
 
-main = flip runContT print do
+main = flip runContT k do
   runParallel $ 
     longest <$> Parallel (getResponseText purescript_org)
             <*> Parallel (getResponseText try_purescript_org)
   where
   longest :: String -> String -> Ordering
   longest = compare `on` length
+
+  k LT = trace "try.purescript.org"
+  k GT = trace "www.purescript.org"
+  k EQ = trace "Lengths are equal"
 
   getResponseText req = responseToString <$> getAll req
 

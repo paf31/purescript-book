@@ -9,7 +9,10 @@ import Control.Monad.Eff.Ref
 import Control.Monad.Trans
 import Control.Monad.Cont.Trans
 
-collect :: forall eff a. ContT Unit (Eff (ref :: Ref | eff)) (Maybe a) -> ContT Unit (Eff (ref :: Ref | eff)) [a]
+type WithRef eff = Eff (ref :: Ref | eff)
+
+collect :: forall eff a. ContT Unit (WithRef eff) (Maybe a) -> 
+                         ContT Unit (WithRef eff) [a]
 collect c = do
   r <- lift $ newRef []
   callCC $ \k -> do
@@ -18,6 +21,7 @@ collect c = do
     case m of
       Nothing -> k xs
       Just x -> quietly $ lift $ writeRef r (xs ++ [x])
+
   where
   quietly :: forall m a. (Monad m) => ContT Unit m Unit -> ContT Unit m a
   quietly = withContT (\_ _ -> return unit)
