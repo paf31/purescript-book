@@ -53,19 +53,23 @@ readFile path k = runFn3 readFileImpl path (k <<< Right) (k <<< Left)
 writeFile :: forall eff. FilePath -> String -> (Either ErrorCode Unit -> Eff (fs :: FS | eff) Unit) -> Eff (fs :: FS | eff) Unit
 writeFile path text k = runFn4 writeFileImpl path text (k $ Right unit) (k <<< Left)
 
-readFileCont :: forall eff. FilePath -> ContT Unit (Eff (fs :: FS | eff)) (Either ErrorCode String)
+type C eff = ContT Unit (Eff (fs :: FS | eff))
+
+readFileCont :: forall eff. FilePath -> C eff (Either ErrorCode String)
 readFileCont path = ContT $ readFile path
 
-writeFileCont :: forall eff. FilePath -> String -> ContT Unit (Eff (fs :: FS | eff)) (Either ErrorCode Unit)
+writeFileCont :: forall eff. FilePath -> String -> C eff (Either ErrorCode Unit)
 writeFileCont path text = ContT $ writeFile path text
 
-readFileContErr :: forall eff. FilePath -> ErrorT ErrorCode (ContT Unit (Eff (fs :: FS | eff))) String
+type EC eff = ErrorT ErrorCode (C eff)
+
+readFileContErr :: forall eff. FilePath -> EC eff String
 readFileContErr path = ErrorT $ readFileCont path
 
-writeFileContErr :: forall eff. FilePath -> String -> ErrorT ErrorCode (ContT Unit (Eff (fs :: FS | eff))) Unit
+writeFileContErr :: forall eff. FilePath -> String -> EC eff Unit
 writeFileContErr path text = ErrorT $ writeFileCont path text
 
-copyFileContErr :: forall eff. FilePath -> FilePath -> ErrorT ErrorCode (ContT Unit (Eff (fs :: FS | eff))) Unit 
+copyFileContErr :: forall eff. FilePath -> FilePath -> EC eff Unit 
 copyFileContErr src dest = do
   content <- readFileContErr src
   writeFileContErr dest content
