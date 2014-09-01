@@ -12,8 +12,6 @@ import Control.Monad.Cont.Extras
 
 foreign import data HTTP :: !
 
-foreign import data Future :: # ! -> !
-
 newtype Request = Request
   { host :: String
   , path :: String
@@ -32,7 +30,7 @@ instance showResponse :: Show Response where
 runChunk :: Chunk -> String
 runChunk (Chunk s) = s
 
-type FutureHTTP f eff = Eff (future :: Future (http :: HTTP | f) | eff)
+type WithHTTP eff = Eff (http :: HTTP | eff)
 
 foreign import getImpl
   "function getImpl(opts, more, done) {\
@@ -47,19 +45,19 @@ foreign import getImpl
   \      });\
   \    }).end();\
   \  };\
-  \}" :: forall eff f a b. Fn3 Request 
-                               (Chunk -> FutureHTTP f eff a) 
-                               (FutureHTTP f eff b) 
-                               (FutureHTTP f eff Unit)
+  \}" :: forall eff a b. Fn3 Request 
+                             (Chunk -> WithHTTP eff a) 
+                             (WithHTTP eff b) 
+                             (WithHTTP eff Unit)
 
-getChunk :: forall eff f a. Request -> 
-                            (Maybe Chunk -> FutureHTTP f eff a) -> 
-                            FutureHTTP f eff Unit
+getChunk :: forall eff a. Request -> 
+                          (Maybe Chunk -> WithHTTP eff a) -> 
+                          WithHTTP eff Unit
 getChunk req k = runFn3 getImpl req (k <<< Just) (k Nothing)
 
-getCont :: forall eff f. Request -> ContT Unit (FutureHTTP f eff) (Maybe Chunk)
+getCont :: forall eff. Request -> ContT Unit (WithHTTP eff) (Maybe Chunk)
 getCont req = ContT $ getChunk req
  
-getAll :: forall eff f. Request -> ContT Unit (FutureHTTP f (ref :: Ref | eff)) Response
+getAll :: forall eff. Request -> ContT Unit (WithHTTP (ref :: Ref | eff)) Response
 getAll req = Response <$> collect (getCont req)
 
