@@ -15,10 +15,11 @@ import Network.HTTP.Client
 
 import Debug.Trace
 
-main = flip runContT k do
-  runParallel $ 
-    longest <$> Parallel (getResponseText purescript_org)
-            <*> Parallel (getResponseText try_purescript_org)
+main = do
+  flip runContT k do
+    runParallel $ 
+      longest <$> Parallel (getResponseText purescript_org)
+              <*> Parallel (getResponseText try_purescript_org)
   where
   longest :: String -> String -> Ordering
   longest = compare `on` length
