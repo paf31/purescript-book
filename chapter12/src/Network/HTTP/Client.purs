@@ -45,14 +45,14 @@ foreign import getImpl
   \      });\
   \    }).end();\
   \  };\
-  \}" :: forall eff a b. Fn3 Request 
-                             (Chunk -> WithHTTP eff a) 
-                             (WithHTTP eff b) 
-                             (WithHTTP eff Unit)
+  \}" :: forall eff. Fn3 Request 
+                         (Chunk -> WithHTTP eff Unit) 
+                         (WithHTTP eff Unit) 
+                         (WithHTTP eff Unit)
 
-getChunk :: forall eff a. Request -> 
-                          (Maybe Chunk -> WithHTTP eff a) -> 
-                          WithHTTP eff Unit
+getChunk :: forall eff. Request -> 
+                        (Maybe Chunk -> WithHTTP eff Unit) -> 
+                        WithHTTP eff Unit
 getChunk req k = runFn3 getImpl req (k <<< Just) (k Nothing)
 
 getCont :: forall eff. Request -> ContT Unit (WithHTTP eff) (Maybe Chunk)
