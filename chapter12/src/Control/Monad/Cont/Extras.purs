@@ -18,13 +18,13 @@ type ContRef eff = ContT Unit (WithRef eff)
 foldC :: forall eff a r. (r -> a -> Tuple Boolean r) -> r -> ContRef eff a -> ContRef eff r
 foldC f r0 c = do
   current <- lift $ newRef r0
-  callCC $ \k -> do
+  callCC $ \k -> quietly $ do
     a <- c
     r <- lift $ readRef current
     case f r a of
       Tuple emit next -> do
         when emit $ k next 
-        quietly $ lift $ writeRef current next
+        lift $ writeRef current next
 
   where
   quietly :: forall m a. (Monad m) => ContT Unit m Unit -> ContT Unit m a
