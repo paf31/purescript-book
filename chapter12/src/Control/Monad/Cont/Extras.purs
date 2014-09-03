@@ -26,7 +26,7 @@ foldC f b0 c = do
       Right r -> k r
 
   where
-  quietly :: forall m a. (Monad m) => ContT Unit m Unit -> ContT Unit m a
+  quietly :: forall m a b. (Monad m) => ContT Unit m b -> ContT Unit m a
   quietly = withContT (\_ _ -> return unit)
 
 collect :: forall eff a. ContRef eff (Maybe a) -> ContRef eff [a]
