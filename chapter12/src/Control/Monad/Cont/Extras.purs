@@ -2,7 +2,7 @@ module Control.Monad.Cont.Extras where
 
 import Data.Array ()
 import Data.Maybe
-import Data.Tuple
+import Data.Either
 
 import Control.Monad
 import Control.Monad.Eff
@@ -15,16 +15,15 @@ type WithRef eff = Eff (ref :: Ref | eff)
 
 type ContRef eff = ContT Unit (WithRef eff)
 
-foldC :: forall eff a r. (r -> a -> Tuple Boolean r) -> r -> ContRef eff a -> ContRef eff r
+foldC :: forall eff a b r. (b -> a -> Either b r) -> b -> ContRef eff a -> ContRef eff r
 foldC f r0 c = do
   current <- lift $ newRef r0
   callCC $ \k -> quietly $ do
     a <- c
-    r <- lift $ readRef current
-    case f r a of
-      Tuple emit next -> do
-        when emit $ k next 
-        lift $ writeRef current next
+    b <- lift $ readRef current
+    case f b a of
+      Left next -> lift $ writeRef current next
+      Right r -> k r
 
   where
   quietly :: forall m a. (Monad m) => ContT Unit m Unit -> ContT Unit m a
@@ -33,5 +32,5 @@ foldC f r0 c = do
 collect :: forall eff a. ContRef eff (Maybe a) -> ContRef eff [a]
 collect = foldC f []
   where
-  f xs Nothing = Tuple true xs
-  f xs (Just x) = Tuple false (xs ++ [x])
+  f xs Nothing = Right xs
+  f xs (Just x) = Left (xs ++ [x])
