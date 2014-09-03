@@ -16,8 +16,8 @@ type WithRef eff = Eff (ref :: Ref | eff)
 type ContRef eff = ContT Unit (WithRef eff)
 
 foldC :: forall eff a b r. (b -> a -> Either b r) -> b -> ContRef eff a -> ContRef eff r
-foldC f r0 c = do
-  current <- lift $ newRef r0
+foldC f b0 c = do
+  current <- lift $ newRef b0
   callCC $ \k -> quietly $ do
     a <- c
     b <- lift $ readRef current
