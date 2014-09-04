@@ -7,10 +7,12 @@ import Control.Monad.Eff.Ref
 
 import Control.Monad.Cont.Trans
 
-par :: forall a b r eff. (a -> b -> r) ->
-                         ContT Unit (Eff (ref :: Ref | eff)) a ->
-                         ContT Unit (Eff (ref :: Ref | eff)) b ->
-                         ContT Unit (Eff (ref :: Ref | eff)) r
+type WithRef eff = Eff (ref :: Ref | eff)
+
+type ContRef eff = ContT Unit (WithRef eff)
+
+par :: forall a b r eff. (a -> b -> r) -> 
+         ContRef eff a -> ContRef eff b -> ContRef eff r
 par f ca cb = ContT $ \k -> do
   ra <- newRef Nothing
   rb <- newRef Nothing
@@ -25,9 +27,9 @@ par f ca cb = ContT $ \k -> do
       Nothing -> writeRef rb $ Just b
       Just a -> k (f a b)
 
-newtype Parallel eff a = Parallel (ContT Unit (Eff (ref :: Ref | eff)) a)
+newtype Parallel eff a = Parallel (ContRef eff a)
 
-runParallel :: forall eff a. Parallel eff a -> ContT Unit (Eff (ref :: Ref | eff)) a
+runParallel :: forall eff a. Parallel eff a -> ContRef eff a
 runParallel (Parallel c) = c
 
 instance functorParallel :: Functor (Parallel eff) where
