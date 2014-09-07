@@ -14,8 +14,8 @@ isSorted :: forall a. (Ord a) => [a] -> Boolean
 isSorted (x1 : t@(x2 : xs)) = x1 <= x2 && isSorted t
 isSorted _ = true
 
-isSubsetOf :: forall a. (Eq a) => [a] -> [a] -> Boolean
-isSubsetOf xs ys = xs `intersect` ys == xs
+isSubarrayOf :: forall a. (Eq a) => [a] -> [a] -> Boolean
+isSubarrayOf xs ys = ys `intersect` xs == xs
 
 numbers :: [Number] -> [Number]
 numbers = id
@@ -33,13 +33,13 @@ main = do
   -- Tests for module 'Merge'
 
   quickCheck $ \xs ys -> isSorted $ merge (sort xs) (sort ys)
-  quickCheck $ \xs ys -> xs `isSubsetOf` merge xs ys
+  quickCheck $ \xs ys -> xs `isSubarrayOf` merge xs ys
 
   quickCheck $ \xs ys -> isSorted $ numbers $ mergePoly (sort xs) (sort ys)
-  quickCheck $ \xs ys -> numbers xs `isSubsetOf` mergePoly xs ys
+  quickCheck $ \xs ys -> numbers xs `isSubarrayOf` mergePoly xs ys
   
   quickCheck $ \xs ys f -> isSorted $ map f $ mergeWith (numberToBool f) (sortBy (compare `on` f) xs) (sortBy (compare `on` f) ys)
-  quickCheck $ \xs ys f -> xs `isSubsetOf` mergeWith (numberToBool f) xs ys
+  quickCheck $ \xs ys f -> xs `isSubarrayOf` mergeWith (numberToBool f) xs ys
   
   -- Tests for module 'Tree'
 
