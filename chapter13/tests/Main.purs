@@ -23,11 +23,8 @@ numbers = id
 numberToBool :: (Number -> Boolean) -> Number -> Boolean
 numberToBool = id
 
-instance arbTree :: (Arbitrary a) => Arbitrary (Tree a) where
-  arbitrary = do
-    b <- arbitrary
-    if b then pure Leaf
-         else Branch <$> arbitrary <*> arbitrary <*> arbitrary
+instance arbTree :: (Arbitrary a, Ord a) => Arbitrary (Tree a) where
+  arbitrary = fromArray <<< sort <$> arbitrary
 
 main = do
   -- Tests for module 'Merge'
@@ -43,4 +40,5 @@ main = do
   
   -- Tests for module 'Tree'
 
+  quickCheck $ \t a -> member a $ insert a (t :: Tree Number) 
   quickCheck $ \xs -> isSorted $ toArray $ foldr insert Leaf $ numbers xs
