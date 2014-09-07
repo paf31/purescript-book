@@ -33,5 +33,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks("grunt-execute");
   grunt.loadNpmTasks("grunt-purescript");
 
-  grunt.registerTask("default", ["psc:lib", "psc:tests", "execute:tests", "dotPsci"]);
+  grunt.registerTask("build", ["psc:lib", "dotPsci"]);
+  grunt.registerTask("test", ["build", "psc:tests", "execute:tests"]);
+  grunt.registerTask("default", ["build", "test"]);
 };

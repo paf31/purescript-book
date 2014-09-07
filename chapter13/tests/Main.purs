@@ -8,6 +8,7 @@ import Merge
 import Tree 
 
 import Test.QuickCheck
+import Test.QuickCheck.LCG
 
 isSorted :: forall a. (Ord a) => [a] -> Boolean
 isSorted (x1 : t@(x2 : xs)) = x1 <= x2 && isSorted t
@@ -21,6 +22,12 @@ numbers = id
 
 numberToBool :: (Number -> Boolean) -> Number -> Boolean
 numberToBool = id
+
+instance arbTree :: (Arbitrary a) => Arbitrary (Tree a) where
+  arbitrary = do
+    b <- arbitrary
+    if b then pure Leaf
+         else Branch <$> arbitrary <*> arbitrary <*> arbitrary
 
 main = do
   -- Tests for module 'Merge'

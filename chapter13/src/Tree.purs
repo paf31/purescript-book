@@ -2,18 +2,9 @@ module Tree where
 
 import Data.Array ()
 
-import Test.QuickCheck
-import Test.QuickCheck.LCG
-
 data Tree a 
   = Leaf
   | Branch (Tree a) a (Tree a)
-
-instance arbTree :: (Arbitrary a) => Arbitrary (Tree a) where
-  arbitrary = do
-    b <- arbitrary
-    if b then pure Leaf
-         else Branch <$> arbitrary <*> arbitrary <*> arbitrary
 
 insert :: forall a. (Ord a) => a -> Tree a -> Tree a
 insert a Leaf = Branch Leaf a Leaf
