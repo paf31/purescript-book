@@ -49,4 +49,4 @@ main = do
   -- Tests for module 'Tree'
 
   quickCheck $ \t a -> member a $ insert a (t :: Tree Number) 
-  quickCheck $ \xs -> isSorted $ toArray $ foldr insert Leaf $ numbers xs
+  quickCheck $ \t xs -> isSorted $ toArray $ foldr insert t $ numbers xs
