@@ -34,6 +34,16 @@ numberToBool = id
 instance arbTree :: (Arbitrary a, Ord a) => Arbitrary (Tree a) where
   arbitrary = fromArray <<< sorted <$> arbitrary
 
+instance coarbTree :: (CoArbitrary a) => CoArbitrary (Tree a) where
+  coarbitrary Leaf = id
+  coarbitrary (Branch l a r) = 
+    coarbitrary l <<< 
+    coarbitrary a <<< 
+    coarbitrary r
+
+treeOfNumber :: Tree Number -> Tree Number
+treeOfNumber = id
+
 main = do
   -- Tests for module 'Merge'
 
@@ -50,3 +60,7 @@ main = do
 
   quickCheck $ \t a -> member a $ insert a (t :: Tree Number) 
   quickCheck $ \t xs -> isSorted $ toArray $ foldr insert t $ numbers xs
+
+  quickCheck $ \f g t -> 
+    anywhere (\s -> f s || g s) t == 
+      anywhere f (treeOfNumber t) || anywhere g t

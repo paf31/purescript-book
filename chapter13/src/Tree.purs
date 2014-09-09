@@ -2,6 +2,7 @@ module Tree where
 
 import Prelude.Unsafe (unsafeIndex)
 import Data.Array (length, drop, take)
+import Data.Monoid
 
 data Tree a 
   = Leaf
@@ -29,3 +30,7 @@ fromArray xs =
   in Branch (fromArray $ take mid xs) 
             (xs `unsafeIndex` mid)
             (fromArray $ drop (mid + 1) xs)
+
+anywhere :: forall a. (Tree a -> Boolean) -> Tree a -> Boolean
+anywhere f Leaf = f Leaf
+anywhere f t@(Branch l _ r) = anywhere f l || f t || anywhere f r
