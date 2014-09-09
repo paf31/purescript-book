@@ -2,14 +2,24 @@ module DOM
   ( Element()
   , Attribute()
   , Content()
+  , AttributeKey()
+
   , a
   , div
   , p
   , img 
-  , render
+
+  , href
+  , _class
+  , src
+  , width
+  , height
+
   , (:=)
   , text
   , elem
+  
+  , render
   ) where
 
 import Data.Maybe
@@ -27,9 +37,11 @@ data Content
   | ElementContent Element
 
 newtype Attribute = Attribute
-  { key          :: String
+  { key          :: String 
   , value        :: String
   }
+
+newtype AttributeKey a = AttributeKey String
 
 element :: String -> [Attribute] -> Maybe [Content] -> Element
 element name attribs content = Element
@@ -44,10 +56,10 @@ text = TextContent
 elem :: Element -> Content
 elem = ElementContent
 
-(:=) :: String -> String -> Attribute
-(:=) key value = Attribute
+(:=) :: forall a. (Show a) => AttributeKey a -> a -> Attribute
+(:=) (AttributeKey key) value = Attribute
   { key: key
-  , value: value
+  , value: show value
   }
 
 a :: [Attribute] -> [Content] -> Element
@@ -61,6 +73,21 @@ p attribs content = element "p" attribs (Just content)
 
 img :: [Attribute] -> Element
 img attribs = element "img" attribs Nothing
+
+href :: AttributeKey String
+href = AttributeKey "href"
+
+_class :: AttributeKey String
+_class = AttributeKey "class"
+
+src :: AttributeKey String
+src = AttributeKey "src"
+
+width :: AttributeKey Number
+width = AttributeKey "width"
+
+height :: AttributeKey Number
+height = AttributeKey "height"
 
 render :: Element -> String
 render (Element e) = 
