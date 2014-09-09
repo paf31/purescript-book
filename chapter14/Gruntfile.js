@@ -7,10 +7,6 @@ module.exports = function(grunt) {
     srcFiles: ["src/**/*.purs", "bower_components/**/src/**/*.purs"],
 
     psc: {
-      options: {
-        main: "Main",
-        modules: ["Main"]
-      },
       all: {
 	src: ["<%=srcFiles%>"],
         dest: "dist/Main.js"
