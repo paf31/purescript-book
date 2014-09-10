@@ -1,4 +1,4 @@
-module Expr 
+module Expr1 
   ( Typed()
   , num
   , bool
