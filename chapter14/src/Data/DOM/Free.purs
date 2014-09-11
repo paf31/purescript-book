@@ -3,6 +3,7 @@ module Data.DOM.Free
   , Attribute()
   , Content()
   , AttributeKey()
+  , IsValue
 
   , a
   , div
@@ -83,10 +84,19 @@ text s = Content $ liftF $ TextContent s unit
 elem :: Element -> Content Unit
 elem e = Content $ liftF $ ElementContent e unit
 
-(:=) :: forall a. (Show a) => AttributeKey a -> a -> Attribute
+class IsValue a where
+  toValue :: a -> String
+
+instance stringIsValue :: IsValue String where
+  toValue = id
+ 
+instance numberIsValue :: IsValue Number where
+  toValue = show
+
+(:=) :: forall a. (IsValue a) => AttributeKey a -> a -> Attribute
 (:=) (AttributeKey key) value = Attribute
   { key: key
-  , value: show value
+  , value: toValue value
   }
 
 a :: [Attribute] -> Content Unit -> Element

@@ -3,6 +3,7 @@ module Data.DOM.Phantom
   , Attribute()
   , Content()
   , AttributeKey()
+  , IsValue
 
   , a
   , div
@@ -56,10 +57,19 @@ text = TextContent
 elem :: Element -> Content
 elem = ElementContent
 
-(:=) :: forall a. (Show a) => AttributeKey a -> a -> Attribute
+class IsValue a where
+  toValue :: a -> String
+
+instance stringIsValue :: IsValue String where
+  toValue = id
+
+instance numberIsValue :: IsValue Number where
+  toValue = show
+
+(:=) :: forall a. (IsValue a) => AttributeKey a -> a -> Attribute
 (:=) (AttributeKey key) value = Attribute
   { key: key
-  , value: show value
+  , value: toValue value
   }
 
 a :: [Attribute] -> [Content] -> Element
