@@ -26,6 +26,7 @@ module Data.DOM.Free
 import Data.Maybe
 import Data.Array (map)
 import Data.String (joinWith)
+import Data.Foldable (for_)
 
 import Control.Monad.Free
 import Control.Monad.Writer
@@ -127,26 +128,39 @@ height :: AttributeKey Number
 height = AttributeKey "height"
 
 render :: Element -> String
-render (Element e) = 
-  "<" ++ e.name ++
-  " " ++ joinWith " " (map renderAttribute e.attribs) ++
-  renderContent e.content
-
+render e = execWriter $ renderElement e
   where
-  renderAttribute :: Attribute -> String
-  renderAttribute (Attribute a) = a.key ++ "=\"" ++ a.value ++ "\""
-  
-  renderContent :: Maybe (Content Unit) -> String
-  renderContent Nothing = " />"
-  renderContent (Just (Content content)) = 
-    ">" ++ execWriter (goM renderContentItem content) ++
-    "</" ++ e.name ++ ">"
+  renderElement :: Element -> Writer String Unit
+  renderElement (Element e) = do
+    tell "<"
+    tell e.name
+    for_ e.attribs $ \a -> do
+      tell " "
+      renderAttribute a
+    renderContent e.content
+    
     where
-    renderContentItem :: forall a. ContentF a -> Writer String a
+    renderAttribute :: Attribute -> Writer String Unit
+    renderAttribute (Attribute a) = do
+      tell a.key
+      tell "=\""
+      tell a.value
+      tell "\""
+    
+    renderContent :: Maybe (Content Unit) -> Writer String Unit
+    renderContent Nothing = tell " />"
+    renderContent (Just (Content content)) = do
+      tell ">"
+      iterM renderContentItem content
+      tell "</"
+      tell e.name
+      tell ">"
+
+    renderContentItem :: forall a. ContentF (Writer String a) -> Writer String a
     renderContentItem (TextContent s rest) = do
       tell s
-      return rest
+      rest
     renderContentItem (ElementContent e rest) = do
-      tell $ render e
-      return rest
+      renderElement e
+      rest
 
