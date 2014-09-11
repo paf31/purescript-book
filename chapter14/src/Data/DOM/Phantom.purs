@@ -1,4 +1,4 @@
-module DOM
+module Data.DOM.Phantom
   ( Element()
   , Attribute()
   , Content()
