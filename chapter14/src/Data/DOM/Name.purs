@@ -5,6 +5,7 @@ module Data.DOM.Name
   , Content()
   , AttributeKey()
   , IsValue
+  , Href(..)
 
   , a
   , div
@@ -12,7 +13,6 @@ module Data.DOM.Name
   , img 
 
   , href
-  , href'
   , _class
   , src
   , width
@@ -23,8 +23,6 @@ module Data.DOM.Name
   , text
   , elem
   , newName 
-
-  , runName
 
   , render
   ) where
@@ -46,9 +44,6 @@ newtype Element = Element
   }
 
 newtype Name = Name String
-
-runName :: Name -> String
-runName (Name n) = n
 
 data ContentF a
   = TextContent String a
@@ -112,7 +107,7 @@ instance numberIsValue :: IsValue Number where
   toValue = show
 
 instance nameIsValue :: IsValue Name where
-  toValue (Name n) = "#" ++ n
+  toValue (Name n) = n
 
 (:=) :: forall a. (IsValue a) => AttributeKey a -> a -> Attribute
 (:=) (AttributeKey key) value = Attribute
@@ -132,13 +127,18 @@ p attribs content = element "p" attribs (Just content)
 img :: [Attribute] -> Element
 img attribs = element "img" attribs Nothing
 
-href :: AttributeKey String
+data Href
+  = URLHref String
+  | AnchorHref Name
+
+instance hrefIsValue :: IsValue Href where
+  toValue (URLHref url) = url
+  toValue (AnchorHref (Name nm)) = "#" ++ nm
+
+href :: AttributeKey Href
 href = AttributeKey "href"
 
-href' :: AttributeKey Name
-href' = AttributeKey "href"
-
-name :: AttributeKey String
+name :: AttributeKey Name 
 name = AttributeKey "name"
 
 _class :: AttributeKey String
