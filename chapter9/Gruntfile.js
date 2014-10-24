@@ -14,23 +14,23 @@ module.exports = function(grunt) {
         modules: ["Main"]
       },
       rectangle: {
-	src: ["src/Rectangle.purs", "<%=srcFiles%>"],
+      src: ["src/Rectangle.purs", "<%=srcFiles%>"],
         dest: "dist/Main.js"
       },
       shapes: {
-	src: ["src/Shapes.purs", "<%=srcFiles%>"],
+      src: ["src/Shapes.purs", "<%=srcFiles%>"],
         dest: "dist/Main.js"
       },
       random: {
-	src: ["src/Random.purs", "<%=srcFiles%>"],
+      src: ["src/Random.purs", "<%=srcFiles%>"],
         dest: "dist/Main.js"
       },
       refs: {
-	src: ["src/Refs.purs", "<%=srcFiles%>"],
+      src: ["src/Refs.purs", "<%=srcFiles%>"],
         dest: "dist/Main.js"
       },
       lsystem: {
-	src: ["src/LSystem.purs", "<%=srcFiles%>"],
+      src: ["src/LSystem.purs", "<%=srcFiles%>"],
         dest: "dist/Main.js"
       }
     },

@@ -19,7 +19,7 @@ root =
   Directory "/" 
     [ Directory "/bin/"
         [ File "/bin/cp" 24800
-	, File "/bin/ls" 34700
+        , File "/bin/ls" 34700
         , File "/bin/mv" 20200
         ]
     , Directory "/etc/"
@@ -37,7 +37,7 @@ root =
                     ]
                 ]
             ]
-	]
+        ]
     ]
 
 filename :: Path -> String

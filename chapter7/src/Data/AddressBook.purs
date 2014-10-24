@@ -49,9 +49,9 @@ examplePerson :: Person
 examplePerson = 
   person "John" "Smith" 
          (address "123 Fake St." "FakeTown" "CA") 
-	 [ phoneNumber HomePhone "555-555-5555"
+         [ phoneNumber HomePhone "555-555-5555"
          , phoneNumber CellPhone "555-555-0000"
-	 ]
+         ]
 
 instance showAddress :: Show Address where
   show (Address o) = "Address " ++
@@ -79,4 +79,3 @@ instance showPerson :: Show Person where
     ", address: "   ++ show o.address ++
     ", phones: "    ++ show o.phones ++
     " }"
-

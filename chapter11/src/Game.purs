@@ -34,7 +34,7 @@ pickUp item = do
       let newItems = M.update (Just <<< S.delete item) state.player state.items
           newInventory = S.insert item state.inventory
       put $ GameState state { items     = newItems
-			    , inventory = newInventory
+                            , inventory = newInventory
                             }
       tell ["You now have the " ++ show item]
     _ -> tell ["I don't see that item here."]
