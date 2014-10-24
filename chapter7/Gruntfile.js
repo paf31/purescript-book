@@ -11,7 +11,7 @@ module.exports = function(grunt) {
         modules: ["Data.AddressBook", "Data.AddressBook.Validation"]
       },
       all: {
-	src: ["<%=srcFiles%>"],
+      src: ["<%=srcFiles%>"],
         dest: "dist/Main.js"
       }
     },

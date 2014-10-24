@@ -11,7 +11,7 @@ module.exports = function(grunt) {
         modules: ["Data.PhoneBook"]
       },
       all: {
-	src: ["<%=srcFiles%>"],
+      src: ["<%=srcFiles%>"],
         dest: "dist/Main.js"
       }
     },

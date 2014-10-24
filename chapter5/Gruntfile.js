@@ -11,7 +11,7 @@ module.exports = function(grunt) {
         modules: ["Data.Picture"]
       },
       all: {
-	src: ["<%=srcFiles%>"],
+      src: ["<%=srcFiles%>"],
         dest: "dist/Main.js"
       }
     },

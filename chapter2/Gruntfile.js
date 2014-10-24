@@ -12,11 +12,11 @@ module.exports = function(grunt) {
       modules: ["Chapter2"]
       },
       all: {
-	src: ["<%=srcFiles%>"],
+      src: ["<%=srcFiles%>"],
         dest: "dist/Main.js"
       }
     },
-	   
+
     dotPsci: ["<%=srcFiles%>"]
   });
 

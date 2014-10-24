@@ -8,7 +8,7 @@ module.exports = function(grunt) {
 
     psc: {
       all: {
-	src: ["<%=srcFiles%>"],
+      src: ["<%=srcFiles%>"],
         dest: "dist/Main.js"
       }
     },

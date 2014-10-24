@@ -41,7 +41,7 @@ instance formDataIsForeign :: IsForeign FormData where
 
     homePhone   <- readProp "homePhone" value
     cellPhone   <- readProp "cellPhone" value
-    
+
     return $ FormData
       { firstName  : firstName
       , lastName   : lastName
@@ -56,20 +56,20 @@ instance formDataIsForeign :: IsForeign FormData where
 
 toFormData :: Person -> FormData
 toFormData (Person p@{ address = Address a
-	             , phones = [ PhoneNumber pn1
+                     , phones = [ PhoneNumber pn1
                                 , PhoneNumber pn2
-			        ] 
+                                ]
                      }) =
   FormData { firstName  : p.firstName
            , lastName   : p.lastName
 
            , street     : a.street
            , city       : a.city
-	   , state      : a.state
+           , state      : a.state
 
            , homePhone  : pn1.number
            , cellPhone  : pn2.number
-	   }
+           }
 
 
 updateForm :: forall eff. String -> String -> Eff (dom :: DOM | eff) Unit
@@ -83,9 +83,9 @@ loadSavedData = do
   item <- getItem "person"
 
   let
-    savedData :: F (Maybe FormData) 
+    savedData :: F (Maybe FormData)
     savedData = do
-      jsonOrNull <- read item	  
+      jsonOrNull <- read item
       traverse readJSON (runNull jsonOrNull)
 
   case savedData of
@@ -98,16 +98,16 @@ loadSavedData = do
       updateForm "#inputStreet"    o.street
       updateForm "#inputCity"      o.city
       updateForm "#inputState"     o.state
-      
+
       updateForm "#inputHomePhone" o.homePhone
       updateForm "#inputCellPhone" o.cellPhone
-      
+
       return unit
 
 validateAndSaveEntry :: forall eff. Eff (trace :: Trace, alert :: Alert, dom :: DOM, storage :: Storage | eff) Unit
 validateAndSaveEntry = do
   trace "Running validators"
-  
+
   errorsOrResult <- validateControls
 
   case errorsOrResult of
@@ -127,7 +127,7 @@ main = do
   setupEventHandlers
 
   Just saveButton <- querySelector "#saveButton"
-  
+
   addEventListener "click" validateAndSaveEntry saveButton
- 
-  return unit 
+
+  return unit

@@ -44,7 +44,7 @@ validateAddress :: Address -> V Errors Address
 validateAddress (Address o) = 
   address <$> (nonEmpty "Street" o.street *> pure o.street)
           <*> (nonEmpty "City"   o.city   *> pure o.city)
-	  <*> (lengthIs "State" 2 o.state *> pure o.state)
+          <*> (lengthIs "State" 2 o.state *> pure o.state)
 
 validatePhoneNumber :: PhoneNumber -> V Errors PhoneNumber
 validatePhoneNumber (PhoneNumber o) = 
@@ -55,7 +55,7 @@ validatePerson :: Person -> V Errors Person
 validatePerson (Person o) =
   person <$> (nonEmpty "First Name" o.firstName *> pure o.firstName)
          <*> (nonEmpty "Last Name"  o.lastName  *> pure o.lastName)
-	 <*> validateAddress o.address
+         <*> validateAddress o.address
          <*> (arrayNonEmpty "Phone Numbers" o.phones *> traverse validatePhoneNumber o.phones)
 
 validatePerson' :: Person -> Either Errors Person

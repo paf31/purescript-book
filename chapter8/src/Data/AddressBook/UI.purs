@@ -30,7 +30,7 @@ valueOf sel = do
 displayValidationErrors :: forall eff. [String] -> Eff (dom :: DOM | eff) Unit
 displayValidationErrors errs = do
   alert <- createElement "div"
-    >>= addClass "alert" 
+    >>= addClass "alert"
     >>= addClass "alert-danger"
 
   ul <- createElement "ul"
@@ -40,43 +40,43 @@ displayValidationErrors errs = do
     li <- createElement "li" >>= setText err
     li `appendChild` ul
     return unit
-  
+
   Just validationErrors <- querySelector "#validationErrors"
   alert `appendChild` validationErrors
-  
+
   return unit
 
-validateControls :: forall eff. Eff (trace :: Trace, dom :: DOM | eff) (Either [String] Person)  
+validateControls :: forall eff. Eff (trace :: Trace, dom :: DOM | eff) (Either [String] Person)
 validateControls = do
   trace "Running validators"
-  
+
   p <- person <$> valueOf "#inputFirstName"
               <*> valueOf "#inputLastName"
               <*> (address <$> valueOf "#inputStreet"
                            <*> valueOf "#inputCity"
                            <*> valueOf "#inputState")
               <*> sequence [ phoneNumber HomePhone <$> valueOf "#inputHomePhone"
-			   , phoneNumber CellPhone <$> valueOf "#inputCellPhone"
+                           , phoneNumber CellPhone <$> valueOf "#inputCellPhone"
                            ]
-  
+
   return $ validatePerson' p
 
 validateAndUpdateUI :: forall eff. Eff (trace :: Trace, dom :: DOM | eff) Unit
 validateAndUpdateUI = do
-  Just validationErrors <- querySelector "#validationErrors"	    
-  setInnerHTML "" validationErrors 
-  
+  Just validationErrors <- querySelector "#validationErrors"
+  setInnerHTML "" validationErrors
+
   errorsOrResult <- validateControls
 
   case errorsOrResult of
     Left errs -> displayValidationErrors errs
     Right result -> print result
- 
+
   return unit
 
 setupEventHandlers :: forall eff. Eff (trace :: Trace, dom :: DOM | eff) Unit
 setupEventHandlers = do
   -- Listen for changes on form fields
-  body >>= addEventListener "change" validateAndUpdateUI 
-  
+  body >>= addEventListener "change" validateAndUpdateUI
+
   return unit

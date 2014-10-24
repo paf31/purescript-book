@@ -12,7 +12,7 @@ module.exports = function(grunt) {
         modules: ["Main"]
       },
       all: {
-	src: ["<%=srcFiles%>"],
+      src: ["<%=srcFiles%>"],
         dest: "dist/Main.js"
       }
     },
