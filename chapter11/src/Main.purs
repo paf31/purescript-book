@@ -23,13 +23,13 @@ import qualified Node.Yargs as Y
 import qualified Node.Yargs.Setup as Y
 import qualified Node.Yargs.Applicative as Y
 
-runGame :: GameEnvironment -> Eff (console :: RL.Console, trace :: Trace) Unit
+runGame :: forall eff. GameEnvironment -> Eff (console :: RL.Console, trace :: Trace | eff) Unit
 runGame env = do
   interface <- RL.createInterface RL.process.stdin RL.process.stdout RL.noCompletion
   RL.setPrompt "> " 2 interface
 
   let
-    lineHandler :: GameState -> String -> Eff (console :: RL.Console, trace :: Trace) Unit
+    lineHandler :: forall eff. GameState -> String -> Eff (console :: RL.Console, trace :: Trace | eff) Unit
     lineHandler currentState input = do
       let result = runRWS (game (split " " input)) env currentState
       foreachE result.log trace

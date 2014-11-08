@@ -4,6 +4,7 @@ import Data.Maybe
 import Data.Tuple
 import Data.Either
 import Data.String
+import Data.Char
 
 import Data.Function
 
@@ -18,12 +19,11 @@ class (Eq a) <= Hashable a where
 hashEqual :: forall a. (Hashable a) => a -> a -> Boolean
 hashEqual = (==) `on` hash
 
+instance hashChar :: Hashable Char where
+  hash = toCharCode
+
 instance hashString :: Hashable String where
-  hash s = go 0 0
-    where
-    go :: Number -> HashCode -> HashCode
-    go i acc | i >= length s = acc
-    go i acc = go (i + 1) acc <#> charCodeAt i s
+  hash = hash <<< toCharArray
 
 instance hashNumber :: Hashable Number where
   hash n = hash (show n)

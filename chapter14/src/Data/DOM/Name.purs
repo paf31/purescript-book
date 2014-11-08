@@ -5,6 +5,7 @@ module Data.DOM.Name
   , Content()
   , AttributeKey()
   , IsValue
+  , toValue
   , Href(..)
 
   , a

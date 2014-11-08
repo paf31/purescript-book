@@ -19,6 +19,6 @@
     "purescript-foldable-traversable": "~0.1.3"
   },
   "devDependencies": {
-    "purescript-quickcheck": "~0.1.3"
+    "purescript-quickcheck": "~0.3.0"
   }
 }

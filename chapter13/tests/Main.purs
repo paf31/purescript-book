@@ -8,7 +8,7 @@ import Merge
 import Tree 
 
 import Test.QuickCheck
-import Test.QuickCheck.LCG
+import Test.QuickCheck.Gen
 
 isSorted :: forall a. (Ord a) => [a] -> Boolean
 isSorted (x1 : t@(x2 : xs)) = x1 <= x2 && isSorted t

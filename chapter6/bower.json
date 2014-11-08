@@ -15,7 +15,7 @@
     "purescript-maybe"                : "*",
     "purescript-tuples"               : "*",
     "purescript-foldable-traversable" : "*",
-    "purescript-strings"              : "*",
+    "purescript-strings"              : "~0.4.1",
     "purescript-either"               : "*"
   }
 }

@@ -4,6 +4,7 @@ module Data.DOM.Free
   , Content()
   , AttributeKey()
   , IsValue
+  , toValue
 
   , a
   , div

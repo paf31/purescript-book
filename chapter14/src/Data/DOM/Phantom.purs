@@ -4,6 +4,7 @@ module Data.DOM.Phantom
   , Content()
   , AttributeKey()
   , IsValue
+  , toValue
 
   , a
   , div
