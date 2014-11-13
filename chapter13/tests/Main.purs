@@ -15,7 +15,7 @@ isSorted (x1 : t@(x2 : xs)) = x1 <= x2 && isSorted t
 isSorted _ = true
 
 isSubarrayOf :: forall a. (Eq a) => [a] -> [a] -> Boolean
-isSubarrayOf xs ys = ys `intersect` xs == xs
+isSubarrayOf xs ys = xs `intersect` ys == xs
 
 newtype Sorted a = Sorted [a]
 
