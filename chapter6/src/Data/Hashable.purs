@@ -1,5 +1,7 @@
 module Data.Hashable where
 
+import Prelude hiding ((<#>))
+
 import Data.Maybe
 import Data.Tuple
 import Data.Either
