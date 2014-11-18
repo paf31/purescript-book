@@ -59,7 +59,7 @@ newtype AttributeKey = AttributeKey String
 (:=) :: AttributeKey -> String -> Attribute
 (:=) (AttributeKey key) value = Attribute
   { key: key
-  , value: show value
+  , value: value
   }
 
 a :: [Attribute] -> [Content] -> Element
