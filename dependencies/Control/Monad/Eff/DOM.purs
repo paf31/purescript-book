@@ -126,4 +126,4 @@ foreign import addEventListener
   \      };\
   \    };\
   \  };\
-  \}" :: forall eff. String -> Eff (dom :: DOM | eff) Unit -> Node -> Eff (dom :: DOM | eff) Node 
+  \}" :: forall eff. String -> Eff (dom :: DOM | eff) Unit -> Node -> Eff (dom :: DOM | eff) Unit 
