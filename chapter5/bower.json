@@ -1,7 +1,9 @@
 {
   "name": "purescript-book-chapter5",
   "description": "Pattern Matching",
-  "keywords": ["purescript"],
+  "keywords": [
+    "purescript"
+  ],
   "ignore": [
     "**/.*",
     "bower_components",
@@ -12,9 +14,9 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-arrays"               : "*",
-    "purescript-foldable-traversable" : "*",
-    "purescript-math"                 : "*",
-    "purescript-globals"              : "*"
+    "purescript-arrays": "~0.4.0",
+    "purescript-console": "~0.1.0",
+    "purescript-math": "~0.2.0",
+    "purescript-globals": "~0.2.0"
   }
 }

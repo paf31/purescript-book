@@ -1,7 +1,9 @@
 {
   "name": "purescript-book-chapter6",
   "description": "Type Classes",
-  "keywords": ["purescript"],
+  "keywords": [
+    "purescript"
+  ],
   "ignore": [
     "**/.*",
     "bower_components",
@@ -12,10 +14,10 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-maybe"                : "*",
-    "purescript-tuples"               : "*",
-    "purescript-foldable-traversable" : "*",
-    "purescript-strings"              : "~0.4.1",
-    "purescript-either"               : "*"
+    "purescript-tuples": "~0.4.0",
+    "purescript-either": "~0.2.0",
+    "purescript-strings": "~0.5.3",
+    "purescript-console": "~0.1.0",
+    "purescript-functions": "~0.1.0"
   }
 }

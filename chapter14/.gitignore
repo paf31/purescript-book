@@ -2,5 +2,6 @@
 !/.bowerrc
 !/.gitignore
 /dist/
+/output/
 /node_modules/
 /bower_components/

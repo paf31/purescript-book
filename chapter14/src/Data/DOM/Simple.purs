@@ -1,13 +1,14 @@
 module Data.DOM.Simple where
 
+import Prelude
+
 import Data.Maybe
-import Data.Array (map)
 import Data.String (joinWith)
 
 newtype Element = Element
   { name         :: String
-  , attribs      :: [Attribute]
-  , content      :: Maybe [Content]
+  , attribs      :: Array Attribute
+  , content      :: Maybe (Array Content)
   }
 
 data Content 
@@ -29,7 +30,7 @@ render (Element e) =
   renderAttribute :: Attribute -> String
   renderAttribute (Attribute a) = a.key ++ "=\"" ++ a.value ++ "\""
   
-  renderContent :: Maybe [Content] -> String
+  renderContent :: Maybe (Array Content) -> String
   renderContent Nothing = " />"
   renderContent (Just content) = 
     ">" ++ joinWith "" (map renderContentItem content) ++

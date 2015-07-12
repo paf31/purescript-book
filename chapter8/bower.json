@@ -1,7 +1,9 @@
 {
   "name": "purescript-book-chapter8",
   "description": "The Eff Monad",
-  "keywords": ["purescript"],
+  "keywords": [
+    "purescript"
+  ],
   "ignore": [
     "**/.*",
     "bower_components",
@@ -15,8 +17,10 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-jquery"                   : "*",
-    "purescript-validation"               : "*",
-    "purescript-strings"                  : "*"
+    "purescript-validation": "~0.2.0",
+    "purescript-strings": "~0.5.4",
+    "purescript-dom": "~0.1.2",
+    "purescript-foreign": "~0.5.1",
+    "purescript-console": "~0.1.0"
   }
 }

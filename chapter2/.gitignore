@@ -1,7 +1,4 @@
-.*
-!/.bowerrc
-!/.gitignore
-/dist/
-/node_modules/
-/bower_components/
-/tmp/
+.psci
+.psci_modules
+output
+bower_components

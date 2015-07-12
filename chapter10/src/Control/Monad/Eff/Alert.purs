@@ -1,13 +1,9 @@
 module Control.Monad.Eff.Alert where
 
+import Prelude (Unit())
+
 import Control.Monad.Eff
 
-foreign import data Alert :: !
+foreign import data ALERT :: !
 
-foreign import alert
-  "function alert(msg) {\
-  \  return function() {\
-  \    window.alert(msg);\
-  \    return {};\
-  \  };\
-  \}" :: forall eff. String -> Eff (alert :: Alert | eff) Unit
+foreign import alert :: forall eff. String -> Eff (alert :: ALERT | eff) Unit

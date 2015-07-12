@@ -1,24 +1,21 @@
 module Main where
+    
+import Prelude
 
-import Data.Array (map)
-import Data.String (joinWith, length)
+import Types
+
+import Data.Either
 
 import Control.Monad.Eff
+import Control.Monad.Eff.Console (log, error)
+import Control.Monad.Trans
 import Control.Monad.Cont.Trans
 
 import Network.HTTP.Client
 
-import Debug.Trace
-
-main = runContT (getResponseText purescript_org) trace
+main = async do
+  response <- get "http://purescript.org"
+  lift (either error log response)
   where
-  getResponseText req = responseToString <$> getAll req
-
-  responseToString :: Response -> String
-  responseToString (Response chunks) = joinWith "" $ map runChunk chunks
-  
-  purescript_org :: Request
-  purescript_org = Request 
-    { host: "www.purescript.org"
-    , path: "/" 
-    }
+  async :: forall eff. Async eff Unit -> Eff eff Unit
+  async = flip runContT return

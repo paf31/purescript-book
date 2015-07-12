@@ -1,5 +1,7 @@
 module Data.Picture where
 
+import Prelude
+
 import Data.Foldable
 
 data Point = Point 
@@ -27,15 +29,10 @@ showShape (Line start end) =
 showShape (Text loc text) = 
   "Text [location: " ++ showPoint loc ++ ", text: " ++ show text ++ "]"
 
-type Picture = [Shape]
+type Picture = Array Shape
 
-showPicture :: Picture -> String
-showPicture picture = "[" ++ go picture ++ "]"
-  where
-  go :: Picture -> String
-  go [] = ""
-  go [x] = showShape x
-  go (x : xs) = showShape x ++ ", " ++ go xs
+showPicture :: Picture -> Array String
+showPicture = map showShape
 
 data Bounds = Bounds
   { top    :: Number
@@ -60,10 +57,10 @@ shapeBounds (Circle (Point { x = x, y = y }) r) = Bounds
   , right:  x + r
   }
 shapeBounds (Rectangle (Point { x = x, y = y }) w h) = Bounds
-  { top:    y - h / 2
-  , left:   x - w / 2
-  , bottom: y + h / 2
-  , right:  x + w / 2
+  { top:    y - h / 2.0
+  , left:   x - w / 2.0
+  , bottom: y + h / 2.0
+  , right:  x + w / 2.0
   }
 shapeBounds (Line (Point p1) (Point p2)) = Bounds
   { top:    Math.min p1.y p2.y

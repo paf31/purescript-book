@@ -1,12 +1,16 @@
 module Files where
 
+import Prelude
+
+import Types
+
 import Data.Either
 import Data.Function
 
 import Control.Monad.Eff
 
 import Control.Monad.Cont.Trans
-import Control.Monad.Error.Trans
+import Control.Monad.Except.Trans
 
 foreign import data FS :: !
 
@@ -14,38 +18,18 @@ type ErrorCode = String
 
 type FilePath = String
 
-foreign import readFileImpl
-  "function readFileImpl(path, onSuccess, onFailure) {\
-  \  return function() {\
-  \    require('fs').readFile(path, { encoding: 'utf-8' }, function(error, data) {\
-  \      if (error) {\
-  \        onFailure(error.code)();\
-  \      } else {\
-  \        onSuccess(data)();\
-  \      }\
-  \    });\
-  \  };\
-  \}" :: forall eff. Fn3 FilePath 
-                         (String -> Eff (fs :: FS | eff) Unit) 
-                         (ErrorCode -> Eff (fs :: FS | eff) Unit) 
-                         (Eff (fs :: FS | eff) Unit) 
+foreign import readFileImpl :: 
+                 forall eff. Fn3 FilePath 
+                   (String -> Eff (fs :: FS | eff) Unit) 
+                   (ErrorCode -> Eff (fs :: FS | eff) Unit) 
+                   (Eff (fs :: FS | eff) Unit) 
                         
-foreign import writeFileImpl
-  "function writeFileImpl(path, data, onSuccess, onFailure) {\
-  \  return function() {\
-  \    require('fs').writeFile(path, data, { encoding: 'utf-8' }, function(error) {\
-  \      if (error) {\
-  \        onFailure(error.code)();\
-  \      } else {\
-  \        onSuccess();\
-  \      }\
-  \    });\
-  \  };\
-  \}" :: forall eff. Fn4 FilePath
-                         String
-                         (Eff (fs :: FS | eff) Unit) 
-                         (ErrorCode -> Eff (fs :: FS | eff) Unit) 
-                         (Eff (fs :: FS | eff) Unit) 
+foreign import writeFileImpl :: 
+                 forall eff. Fn4 FilePath
+                   String
+                   (Eff (fs :: FS | eff) Unit) 
+                   (ErrorCode -> Eff (fs :: FS | eff) Unit) 
+                   (Eff (fs :: FS | eff) Unit) 
                        
 readFile :: forall eff. FilePath -> (Either ErrorCode String -> Eff (fs :: FS | eff) Unit) -> Eff (fs :: FS | eff) Unit
 readFile path k = runFn3 readFileImpl path (k <<< Right) (k <<< Left)
@@ -53,23 +37,19 @@ readFile path k = runFn3 readFileImpl path (k <<< Right) (k <<< Left)
 writeFile :: forall eff. FilePath -> String -> (Either ErrorCode Unit -> Eff (fs :: FS | eff) Unit) -> Eff (fs :: FS | eff) Unit
 writeFile path text k = runFn4 writeFileImpl path text (k $ Right unit) (k <<< Left)
 
-type C eff = ContT Unit (Eff (fs :: FS | eff))
-
-readFileCont :: forall eff. FilePath -> C eff (Either ErrorCode String)
+readFileCont :: forall eff. FilePath -> Async (fs :: FS | eff) (Either ErrorCode String)
 readFileCont path = ContT $ readFile path
 
-writeFileCont :: forall eff. FilePath -> String -> C eff (Either ErrorCode Unit)
+writeFileCont :: forall eff. FilePath -> String -> Async (fs :: FS | eff) (Either ErrorCode Unit)
 writeFileCont path text = ContT $ writeFile path text
 
-type EC eff = ErrorT ErrorCode (C eff)
+readFileContEx :: forall eff. FilePath -> ExceptT ErrorCode (Async (fs :: FS | eff)) String
+readFileContEx path = ExceptT $ readFileCont path
 
-readFileContErr :: forall eff. FilePath -> EC eff String
-readFileContErr path = ErrorT $ readFileCont path
+writeFileContEx :: forall eff. FilePath -> String -> ExceptT ErrorCode (Async (fs :: FS | eff)) Unit
+writeFileContEx path text = ExceptT $ writeFileCont path text
 
-writeFileContErr :: forall eff. FilePath -> String -> EC eff Unit
-writeFileContErr path text = ErrorT $ writeFileCont path text
-
-copyFileContErr :: forall eff. FilePath -> FilePath -> EC eff Unit 
-copyFileContErr src dest = do
-  content <- readFileContErr src
-  writeFileContErr dest content
+copyFileContEx :: forall eff. FilePath -> FilePath -> ExceptT ErrorCode (Async (fs :: FS | eff)) Unit 
+copyFileContEx src dest = do
+  content <- readFileContEx src
+  writeFileContEx dest content

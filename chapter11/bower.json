@@ -1,7 +1,9 @@
 {
   "name": "purescript-book-chapter11",
   "description": "Monad Transformers",
-  "keywords": ["purescript"],
+  "keywords": [
+    "purescript"
+  ],
   "ignore": [
     "**/.*",
     "bower_components",
@@ -15,10 +17,11 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-transformers":   "~0.1.2",
-    "purescript-strings":        "~0.2.1",
-    "purescript-maps":           "~0.0.4",
-    "purescript-yargs":          "~0.3.0",
-    "purescript-node-readline":  "~0.1.1"
+    "purescript-transformers": "~0.6.1",
+    "purescript-yargs": "~0.6.0",
+    "purescript-strings": "~0.5.4",
+    "purescript-maps": "~0.4.0",
+    "purescript-sets": "~0.4.1",
+    "purescript-node-readline": "~0.3.0"
   }
 }
