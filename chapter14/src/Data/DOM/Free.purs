@@ -2,12 +2,12 @@ module Data.DOM.Free
   ( Element()
   , Attribute()
   , Content()
+  , ContentF()
   , AttributeKey()
   , IsValue
   , toValue
 
   , a
-  , div
   , p
   , img 
 
@@ -24,9 +24,9 @@ module Data.DOM.Free
   , render
   ) where
 
+import Prelude
+
 import Data.Maybe
-import Data.Array (map)
-import Data.String (joinWith)
 import Data.Foldable (for_)
 
 import Control.Monad.Free
@@ -35,7 +35,7 @@ import Control.Monad.Writer.Class
 
 newtype Element = Element
   { name         :: String
-  , attribs      :: [Attribute]
+  , attribs      :: Array Attribute
   , content      :: Maybe (Content Unit)
   }
 
@@ -44,27 +44,10 @@ data ContentF a
   | ElementContent Element a
 
 instance functorContentF :: Functor ContentF where
-  (<$>) f (TextContent s a) = TextContent s (f a)
-  (<$>) f (ElementContent e a) = ElementContent e (f a)
+  map f (TextContent s a) = TextContent s (f a)
+  map f (ElementContent e a) = ElementContent e (f a)
 
-newtype Content a = Content (Free ContentF a)
-
-runContent :: forall a. Content a -> Free ContentF a
-runContent (Content x) = x
-
-instance functorContent :: Functor Content where
-  (<$>) f (Content x) = Content (f <$> x)
-
-instance applyContent :: Apply Content where
-  (<*>) (Content f) (Content x) = Content (f <*> x)
-
-instance applicativeContent :: Applicative Content where
-  pure = Content <<< pure
-
-instance bindContent :: Bind Content where
-  (>>=) (Content x) f = Content (x >>= (runContent <<< f))
-
-instance monadContent :: Monad Content
+type Content = Free ContentF
 
 newtype Attribute = Attribute
   { key          :: String 
@@ -73,7 +56,7 @@ newtype Attribute = Attribute
 
 newtype AttributeKey a = AttributeKey String
 
-element :: String -> [Attribute] -> Maybe (Content Unit) -> Element
+element :: String -> Array Attribute -> Maybe (Content Unit) -> Element
 element name attribs content = Element
   { name:      name
   , attribs:   attribs
@@ -81,16 +64,19 @@ element name attribs content = Element
   }
 
 text :: String -> Content Unit
-text s = Content $ liftF $ TextContent s unit
+text s = liftF $ TextContent s unit
 
 elem :: Element -> Content Unit
-elem e = Content $ liftF $ ElementContent e unit
+elem e = liftF $ ElementContent e unit
 
 class IsValue a where
   toValue :: a -> String
 
 instance stringIsValue :: IsValue String where
   toValue = id
+ 
+instance intIsValue :: IsValue Int where
+  toValue = show
  
 instance numberIsValue :: IsValue Number where
   toValue = show
@@ -101,16 +87,13 @@ instance numberIsValue :: IsValue Number where
   , value: toValue value
   }
 
-a :: [Attribute] -> Content Unit -> Element
+a :: Array Attribute -> Content Unit -> Element
 a attribs content = element "a" attribs (Just content)
 
-div :: [Attribute] -> Content Unit -> Element
-div attribs content = element "div" attribs (Just content)
-
-p :: [Attribute] -> Content Unit -> Element
+p :: Array Attribute -> Content Unit -> Element
 p attribs content = element "p" attribs (Just content)
 
-img :: [Attribute] -> Element
+img :: Array Attribute -> Element
 img attribs = element "img" attribs Nothing
 
 href :: AttributeKey String
@@ -150,18 +133,18 @@ render e = execWriter $ renderElement e
     
     renderContent :: Maybe (Content Unit) -> Writer String Unit
     renderContent Nothing = tell " />"
-    renderContent (Just (Content content)) = do
+    renderContent (Just content) = do
       tell ">"
-      iterM renderContentItem content
+      runFreeM renderContentItem content
       tell "</"
       tell e.name
       tell ">"
 
-    renderContentItem :: forall a. ContentF (Writer String a) -> Writer String a
+    renderContentItem :: forall a. ContentF (Content a) -> Writer String (Content a)
     renderContentItem (TextContent s rest) = do
       tell s
-      rest
+      return rest
     renderContentItem (ElementContent e rest) = do
       renderElement e
-      rest
+      return rest
 

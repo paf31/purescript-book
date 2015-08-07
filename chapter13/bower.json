@@ -1,7 +1,9 @@
 {
   "name": "purescript-book-chapter13",
   "description": "Generative Testing",
-  "keywords": ["purescript"],
+  "keywords": [
+    "purescript"
+  ],
   "ignore": [
     "**/.*",
     "bower_components",
@@ -15,10 +17,9 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-arrays": "~0.2.1",
-    "purescript-foldable-traversable": "~0.1.3"
-  },
-  "devDependencies": {
-    "purescript-quickcheck": "~0.3.0"
+    "purescript-arrays": "~0.4.0",
+    "purescript-quickcheck": "~0.7.0",
+    "purescript-functions": "~0.1.0",
+    "purescript-lists": "~0.7.0"
   }
 }

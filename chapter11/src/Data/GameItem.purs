@@ -1,5 +1,7 @@
 module Data.GameItem where
 
+import Prelude
+
 import Data.Maybe
 
 data GameItem = Candle | Matches
@@ -9,10 +11,9 @@ instance showGameItem :: Show GameItem where
   show Matches        = "Matches"
 
 instance eqGameItem :: Eq GameItem where
-  (==) Candle      Candle      = true
-  (==) Matches     Matches     = true
-  (==) _           _           = false
-  (/=) x           y           = not (x == y)
+  eq Candle      Candle      = true
+  eq Matches     Matches     = true
+  eq _           _           = false
 
 instance ordGameItem :: Ord GameItem where
   compare Candle  Candle   = EQ

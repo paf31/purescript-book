@@ -1,13 +1,15 @@
 module Main where
 
-import Control.Monad.Eff
-import Control.Monad.Eff.DOM (DOM())
+import Prelude
 
-import Debug.Trace
+import DOM
+
+import Control.Monad.Eff
+import Control.Monad.Eff.Console
 
 import Data.AddressBook.UI
 
-main :: forall eff. Eff (trace :: Trace, dom :: DOM | eff) Unit
+main :: forall eff. Eff (console :: CONSOLE, dom :: DOM | eff) Unit
 main = do
-  trace "Attaching event handlers"
+  log "Attaching event handlers"
   setupEventHandlers 

@@ -1,8 +1,10 @@
 module Data.Coords where
 
+import Prelude
+
 newtype Coords = Coords
-  { x :: Number
-  , y :: Number
+  { x :: Int
+  , y :: Int
   }
 
 instance showCoords :: Show Coords where
@@ -12,8 +14,7 @@ instance showCoords :: Show Coords where
                     " }"
 
 instance eqCoords :: Eq Coords where
-  (==) (Coords p1) (Coords p2) = p1.x == p2.x && p1.y == p2.y
-  (/=) (Coords p1) (Coords p2) = p1.x /= p2.x || p1.y /= p2.y
+  eq (Coords p1) (Coords p2) = p1.x == p2.x && p1.y == p2.y
 
 instance ordCoords :: Ord Coords where
   compare (Coords p1) (Coords p2) =
@@ -21,7 +22,7 @@ instance ordCoords :: Ord Coords where
       EQ -> compare p1.y p2.y
       other -> other
 
-coords :: Number -> Number -> Coords
+coords :: Int -> Int -> Coords
 coords x y = Coords { x: x, y: y }
 
 prettyPrintCoords :: Coords -> String

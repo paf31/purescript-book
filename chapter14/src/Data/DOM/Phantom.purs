@@ -7,7 +7,6 @@ module Data.DOM.Phantom
   , toValue
 
   , a
-  , div
   , p
   , img 
 
@@ -24,14 +23,15 @@ module Data.DOM.Phantom
   , render
   ) where
 
+import Prelude
+
 import Data.Maybe
-import Data.Array (map)
 import Data.String (joinWith)
 
 newtype Element = Element
   { name         :: String
-  , attribs      :: [Attribute]
-  , content      :: Maybe [Content]
+  , attribs      :: Array Attribute
+  , content      :: Maybe (Array Content)
   }
 
 data Content 
@@ -45,7 +45,7 @@ newtype Attribute = Attribute
 
 newtype AttributeKey a = AttributeKey String
 
-element :: String -> [Attribute] -> Maybe [Content] -> Element
+element :: String -> Array Attribute -> Maybe (Array Content) -> Element
 element name attribs content = Element
   { name:      name
   , attribs:   attribs
@@ -63,7 +63,10 @@ class IsValue a where
 
 instance stringIsValue :: IsValue String where
   toValue = id
-
+ 
+instance intIsValue :: IsValue Int where
+  toValue = show
+ 
 instance numberIsValue :: IsValue Number where
   toValue = show
 
@@ -73,16 +76,13 @@ instance numberIsValue :: IsValue Number where
   , value: toValue value
   }
 
-a :: [Attribute] -> [Content] -> Element
+a :: Array Attribute -> Array Content -> Element
 a attribs content = element "a" attribs (Just content)
 
-div :: [Attribute] -> [Content] -> Element
-div attribs content = element "div" attribs (Just content)
-
-p :: [Attribute] -> [Content] -> Element
+p :: Array Attribute -> Array Content -> Element
 p attribs content = element "p" attribs (Just content)
 
-img :: [Attribute] -> Element
+img :: Array Attribute -> Element
 img attribs = element "img" attribs Nothing
 
 href :: AttributeKey String
@@ -110,7 +110,7 @@ render (Element e) =
   renderAttribute :: Attribute -> String
   renderAttribute (Attribute a) = a.key ++ "=\"" ++ a.value ++ "\""
   
-  renderContent :: Maybe [Content] -> String
+  renderContent :: Maybe (Array Content) -> String
   renderContent Nothing = " />"
   renderContent (Just content) = 
     ">" ++ joinWith "" (map renderContentItem content) ++

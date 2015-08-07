@@ -1,12 +1,28 @@
 module Tree where
 
-import Prelude.Unsafe (unsafeIndex)
-import Data.Array (length, drop, take)
+import Prelude
+
+import Sorted
+
 import Data.Monoid
+import Data.Foldable (foldr)
+
+import Test.QuickCheck.Gen
+import Test.QuickCheck.Arbitrary
 
 data Tree a 
   = Leaf
   | Branch (Tree a) a (Tree a)
+
+instance arbTree :: (Arbitrary a, Ord a) => Arbitrary (Tree a) where
+  arbitrary = map fromArray arbitrary
+
+instance coarbTree :: (Coarbitrary a) => Coarbitrary (Tree a) where
+  coarbitrary Leaf = id
+  coarbitrary (Branch l a r) = 
+    coarbitrary l <<< 
+    coarbitrary a <<< 
+    coarbitrary r
 
 insert :: forall a. (Ord a) => a -> Tree a -> Tree a
 insert a Leaf = Branch Leaf a Leaf
@@ -19,17 +35,12 @@ member a (Branch _ a1 _) | a == a1 = true
 member a (Branch l a1 _) | a < a1 = a `member` l
 member a (Branch _ _  r) = a `member` r
 
-toArray :: forall a. Tree a -> [a]
+toArray :: forall a. Tree a -> Array a
 toArray Leaf = []
 toArray (Branch l a r) = toArray l ++ [a] ++ toArray r
 
-fromArray :: forall a. (Ord a) => [a] -> Tree a
-fromArray [] = Leaf
-fromArray xs = 
-  let mid = length xs `shr` 1
-  in Branch (fromArray $ take mid xs) 
-            (xs `unsafeIndex` mid)
-            (fromArray $ drop (mid + 1) xs)
+fromArray :: forall a. (Ord a) => Array a -> Tree a
+fromArray = foldr insert Leaf
 
 anywhere :: forall a. (Tree a -> Boolean) -> Tree a -> Boolean
 anywhere f Leaf = f Leaf

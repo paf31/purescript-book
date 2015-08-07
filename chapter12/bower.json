@@ -1,7 +1,9 @@
 {
   "name": "purescript-book-chapter12",
   "description": "Callback Hell",
-  "keywords": ["purescript"],
+  "keywords": [
+    "purescript"
+  ],
   "ignore": [
     "**/.*",
     "bower_components",
@@ -15,8 +17,12 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-transformers": "~0.2.1",
-    "purescript-strings": "~0.2.1",
-    "purescript-refs": "~0.1.1"
+    "purescript-transformers": "~0.6.1",
+    "purescript-strings": "~0.5.4",
+    "purescript-refs": "~0.2.0",
+    "purescript-parallel": "~0.3.0",
+    "purescript-lists": "~0.7.0",
+    "purescript-functions": "~0.1.0",
+    "purescript-console": "~0.1.0"
   }
 }

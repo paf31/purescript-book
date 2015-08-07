@@ -1,17 +1,23 @@
 module Merge where
 
-merge :: [Number] -> [Number] -> [Number]
+import Prelude
+
+import Sorted
+
+import Data.List (List(..), toList, fromList, reverse)
+
+merge :: Array Int -> Array Int -> Array Int
 merge = mergePoly
 
-mergePoly :: forall a. (Ord a) => [a] -> [a] -> [a]
+mergePoly :: forall a. (Ord a) => Array a -> Array a -> Array a
 mergePoly = mergeWith id
 
-mergeWith :: forall a b. (Ord b) => (a -> b) -> [a] -> [a] -> [a]
-mergeWith f = go
+mergeWith :: forall a b. (Ord b) => (a -> b) -> Array a -> Array a -> Array a
+mergeWith f xs ys = fromList (go Nil (toList xs) (toList ys))
   where
-  go [] ys = ys
-  go xs [] = xs
-  go xs@(x : xs') ys@(y : ys') = 
+  go acc Nil ys  = reverse acc ++ ys
+  go acc xs  Nil = reverse acc ++ xs
+  go acc xs@(Cons x xs') ys@(Cons y ys') = 
     case compare (f x) (f y) of 
-      LT -> x : go xs' ys
-      _  -> y : go xs  ys'
+      LT -> go (Cons x acc) xs' ys
+      _  -> go (Cons y acc) xs  ys'

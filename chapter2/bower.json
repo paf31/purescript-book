@@ -1,7 +1,9 @@
 {
   "name": "purescript-book-chapter2",
   "description": "Chapter 2 - Getting Started",
-  "keywords": ["purescript"],
+  "keywords": [
+    "purescript"
+  ],
   "ignore": [
     "**/.*",
     "bower_components",
@@ -15,6 +17,7 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-math": "0.1.0"
+    "purescript-math": "^0.2.0",
+    "purescript-console": "^0.1.0"
   }
 }

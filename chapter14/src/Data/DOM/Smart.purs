@@ -5,7 +5,6 @@ module Data.DOM.Smart
   , AttributeKey()
 
   , a
-  , div
   , p
   , img 
 
@@ -22,14 +21,15 @@ module Data.DOM.Smart
   , render
   ) where
 
+import Prelude
+
 import Data.Maybe
-import Data.Array (map)
 import Data.String (joinWith)
 
 newtype Element = Element
   { name         :: String
-  , attribs      :: [Attribute]
-  , content      :: Maybe [Content]
+  , attribs      :: Array Attribute
+  , content      :: Maybe (Array Content)
   }
 
 data Content 
@@ -41,7 +41,7 @@ newtype Attribute = Attribute
   , value        :: String
   }
 
-element :: String -> [Attribute] -> Maybe [Content] -> Element
+element :: String -> Array Attribute -> Maybe (Array Content) -> Element
 element name attribs content = Element
   { name:      name
   , attribs:   attribs
@@ -62,16 +62,13 @@ newtype AttributeKey = AttributeKey String
   , value: value
   }
 
-a :: [Attribute] -> [Content] -> Element
+a :: Array Attribute -> Array Content -> Element
 a attribs content = element "a" attribs (Just content)
 
-div :: [Attribute] -> [Content] -> Element
-div attribs content = element "div" attribs (Just content)
-
-p :: [Attribute] -> [Content] -> Element
+p :: Array Attribute -> Array Content -> Element
 p attribs content = element "p" attribs (Just content)
 
-img :: [Attribute] -> Element
+img :: Array Attribute -> Element
 img attribs = element "img" attribs Nothing
 
 href :: AttributeKey
@@ -99,7 +96,7 @@ render (Element e) =
   renderAttribute :: Attribute -> String
   renderAttribute (Attribute a) = a.key ++ "=\"" ++ a.value ++ "\""
   
-  renderContent :: Maybe [Content] -> String
+  renderContent :: Maybe (Array Content) -> String
   renderContent Nothing = " />"
   renderContent (Just content) = 
     ">" ++ joinWith "" (map renderContentItem content) ++

@@ -1,5 +1,7 @@
 module Main where
 
+import Prelude
+
 import Data.Maybe
 import Data.Array (length)
 import Data.Either
@@ -11,12 +13,13 @@ import Data.Traversable
 import Data.AddressBook
 import Data.AddressBook.UI
 
+import DOM
+
 import Control.Monad.Eff
 import Control.Monad.Eff.DOM
 import Control.Monad.Eff.Alert
 import Control.Monad.Eff.Storage
-
-import Debug.Trace
+import Control.Monad.Eff.Console
 
 newtype FormData = FormData
   { firstName  :: String
@@ -78,7 +81,7 @@ updateForm sel value = do
   setValue value element
   return unit
 
-loadSavedData :: forall eff. Eff (trace :: Trace, alert :: Alert, dom :: DOM, storage :: Storage | eff) Unit
+loadSavedData :: forall eff. Eff (console :: CONSOLE, alert :: ALERT, dom :: DOM, storage :: STORAGE | eff) Unit
 loadSavedData = do
   item <- getItem "person"
 
@@ -104,9 +107,9 @@ loadSavedData = do
 
       return unit
 
-validateAndSaveEntry :: forall eff. Eff (trace :: Trace, alert :: Alert, dom :: DOM, storage :: Storage | eff) Unit
+validateAndSaveEntry :: forall eff. Eff (console :: CONSOLE, alert :: ALERT, dom :: DOM, storage :: STORAGE | eff) Unit
 validateAndSaveEntry = do
-  trace "Running validators"
+  log "Running validators"
 
   errorsOrResult <- validateControls
 
@@ -118,12 +121,12 @@ validateAndSaveEntry = do
 
   return unit
 
-main :: forall eff. Eff (trace :: Trace, alert :: Alert, dom :: DOM, storage :: Storage | eff) Unit
+main :: forall eff. Eff (console :: CONSOLE, alert :: ALERT, dom :: DOM, storage :: STORAGE | eff) Unit
 main = do
-  trace "Loading data from local storage"
+  log "Loading data from local storage"
   loadSavedData
 
-  trace "Attaching event handlers"
+  log "Attaching event handlers"
   setupEventHandlers
 
   Just saveButton <- querySelector "#saveButton"
