@@ -1,7 +1,9 @@
 {
   "name": "purescript-book-chapter3",
   "description": "Chapter 3 - Functions and Records",
-  "keywords": ["purescript"],
+  "keywords": [
+    "purescript"
+  ],
   "ignore": [
     "**/.*",
     "bower_components",
@@ -15,6 +17,7 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-lists" : "^0.7.0"
+    "purescript-lists": "^0.7.0",
+    "purescript-console": "^0.1.0"
   }
 }
