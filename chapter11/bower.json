@@ -18,8 +18,8 @@
   ],
   "dependencies": {
     "purescript-transformers": "~0.6.1",
-    "purescript-yargs": "~0.6.0",
-    "purescript-strings": "~0.5.4",
+    "purescript-yargs": "~0.7.0",
+    "purescript-strings": "~0.7.0",
     "purescript-maps": "~0.4.0",
     "purescript-sets": "~0.4.1",
     "purescript-node-readline": "~0.3.0"

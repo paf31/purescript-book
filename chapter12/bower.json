@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "purescript-transformers": "~0.6.1",
-    "purescript-strings": "~0.5.4",
+    "purescript-strings": "~0.7.0",
     "purescript-refs": "~0.2.0",
     "purescript-parallel": "~0.3.0",
     "purescript-lists": "~0.7.0",

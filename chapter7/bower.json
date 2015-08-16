@@ -21,6 +21,6 @@
     "purescript-console": "~0.1.0",
     "purescript-arrays": "~0.4.1",
     "purescript-either": "~0.2.0",
-    "purescript-strings": "~0.6.0"
+    "purescript-strings": "~0.7.0"
   }
 }

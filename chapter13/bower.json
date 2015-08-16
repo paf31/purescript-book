@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "purescript-arrays": "~0.4.0",
-    "purescript-quickcheck": "~0.7.0",
+    "purescript-quickcheck": "~0.9.0",
     "purescript-functions": "~0.1.0",
     "purescript-lists": "~0.7.0"
   }

@@ -23,7 +23,7 @@
     "purescript-math": "~0.2.0",
     "purescript-random": "~0.2.1",
     "purescript-dom": "~0.1.2",
-    "purescript-foreign": "~0.5.1",
+    "purescript-foreign": "~0.7.0",
     "purescript-refs": "~0.2.0",
     "purescript-console": "~0.1.0"
   }
