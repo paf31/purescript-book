@@ -13,10 +13,11 @@ import Data.Maybe
 import Data.Tuple
 import Data.Either
 import Data.String
-import Data.Char
 import Data.Function (on)
 import Data.Foldable (foldMap)
 import Data.Monoid (Monoid)
+
+import qualified Data.Char as C
 
 newtype HashCode = HashCode Int
 
@@ -42,7 +43,7 @@ hashEqual :: forall a. (Hashable a) => a -> a -> Boolean
 hashEqual = eq `on` hash
 
 instance hashChar :: Hashable Char where
-  hash = hash <<< toCharCode
+  hash = hash <<< C.toCharCode
 
 instance hashString :: Hashable String where
   hash = hash <<< toCharArray
