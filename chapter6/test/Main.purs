@@ -1,15 +1,17 @@
 module Test.Main where
 
 import Prelude
-import Data.Hashable
-import Control.Monad.Eff.Console
 
+import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Console (CONSOLE, logShow)
+import Data.Hashable (hash, hashEqual)
+
+main :: Eff (console :: CONSOLE) Unit
 main = do
-  print (hash 123)
-  print (hash true)
-  print (hash [1, 2, 3])
-  print (hash "testing")
-  print (hash 'a')
-
-  print ("foo" `hashEqual` "foo")
-  print ("foo" `hashEqual` "bar")
+  logShow (hash 123)
+  logShow (hash true)
+  logShow (hash [1, 2, 3])
+  logShow (hash "testing")
+  logShow (hash 'a')
+  logShow ("foo" `hashEqual` "foo")
+  logShow ("foo" `hashEqual` "bar")

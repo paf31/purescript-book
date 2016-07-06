@@ -1,14 +1,14 @@
 module Data.DOM.Phantom
-  ( Element()
-  , Attribute()
-  , Content()
-  , AttributeKey()
-  , IsValue
+  ( Element
+  , Attribute
+  , Content
+  , AttributeKey
+  , class IsValue
   , toValue
 
   , a
   , p
-  , img 
+  , img
 
   , href
   , _class
@@ -16,16 +16,16 @@ module Data.DOM.Phantom
   , width
   , height
 
-  , (:=)
+  , attribute, (:=)
   , text
   , elem
-  
+
   , render
   ) where
 
 import Prelude
 
-import Data.Maybe
+import Data.Maybe (Maybe(..))
 import Data.String (joinWith)
 
 newtype Element = Element
@@ -34,12 +34,12 @@ newtype Element = Element
   , content      :: Maybe (Array Content)
   }
 
-data Content 
+data Content
   = TextContent String
   | ElementContent Element
 
 newtype Attribute = Attribute
-  { key          :: String 
+  { key          :: String
   , value        :: String
   }
 
@@ -63,18 +63,17 @@ class IsValue a where
 
 instance stringIsValue :: IsValue String where
   toValue = id
- 
+
 instance intIsValue :: IsValue Int where
   toValue = show
- 
-instance numberIsValue :: IsValue Number where
-  toValue = show
 
-(:=) :: forall a. (IsValue a) => AttributeKey a -> a -> Attribute
-(:=) (AttributeKey key) value = Attribute
+attribute :: forall a. IsValue a => AttributeKey a -> a -> Attribute
+attribute (AttributeKey key) value = Attribute
   { key: key
   , value: toValue value
   }
+
+infix 4 attribute as :=
 
 a :: Array Attribute -> Array Content -> Element
 a attribs content = element "a" attribs (Just content)
@@ -94,29 +93,28 @@ _class = AttributeKey "class"
 src :: AttributeKey String
 src = AttributeKey "src"
 
-width :: AttributeKey Number
+width :: AttributeKey Int
 width = AttributeKey "width"
 
-height :: AttributeKey Number
+height :: AttributeKey Int
 height = AttributeKey "height"
 
 render :: Element -> String
-render (Element e) = 
-  "<" ++ e.name ++
-  " " ++ joinWith " " (map renderAttribute e.attribs) ++
+render (Element e) =
+  "<" <> e.name <>
+  " " <> joinWith " " (map renderAttribute e.attribs) <>
   renderContent e.content
 
   where
   renderAttribute :: Attribute -> String
-  renderAttribute (Attribute a) = a.key ++ "=\"" ++ a.value ++ "\""
-  
+  renderAttribute (Attribute x) = x.key <> "=\"" <> x.value <> "\""
+
   renderContent :: Maybe (Array Content) -> String
   renderContent Nothing = " />"
-  renderContent (Just content) = 
-    ">" ++ joinWith "" (map renderContentItem content) ++
-    "</" ++ e.name ++ ">"
+  renderContent (Just content) =
+    ">" <> joinWith "" (map renderContentItem content) <>
+    "</" <> e.name <> ">"
     where
     renderContentItem :: Content -> String
     renderContentItem (TextContent s) = s
     renderContentItem (ElementContent e) = render e
-

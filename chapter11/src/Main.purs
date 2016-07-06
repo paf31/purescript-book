@@ -2,55 +2,69 @@ module Main where
 
 import Prelude
 
-import Data.Maybe
-import Data.String
-import Data.Either
+import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Console (CONSOLE, log)
+import Control.Monad.Eff.Exception (EXCEPTION)
+import Control.Monad.RWS (RWSResult(..), runRWS)
+
+
+import Data.Either (Either(..))
 import Data.Foldable (for_)
+import Data.GameEnvironment (GameEnvironment, gameEnvironment)
 
-import Data.Coords
-import Data.GameItem
-import Data.GameState
-import Data.GameEnvironment
+import Data.GameState (GameState, initialGameState)
+import Data.Maybe (Maybe(..))
+import Data.String (split)
+import Game (game)
+import Node.ReadLine as RL
 
-import Control.Monad.Eff
-import Control.Monad.Eff.Console
-import Control.Monad.RWS
-import Control.Monad.RWS.Class
+import Node.Yargs.Applicative (Y, runY, flag, yarg)
+import Node.Yargs.Setup (usage)
 
-import Game
-
-import qualified Node.ReadLine as RL
-
-import qualified Node.Yargs as Y
-import qualified Node.Yargs.Setup as Y
-import qualified Node.Yargs.Applicative as Y
-
-runGame :: forall eff. GameEnvironment -> Eff (console :: CONSOLE | eff) Unit
+runGame
+  :: forall eff
+   . GameEnvironment
+  -> Eff ( err :: EXCEPTION
+         , readline :: RL.READLINE
+         , console :: CONSOLE
+         | eff
+         ) Unit
 runGame env = do
-  interface <- RL.createInterface RL.noCompletion
+  interface <- RL.createConsoleInterface RL.noCompletion
   RL.setPrompt "> " 2 interface
 
   let
-    lineHandler :: forall eff. GameState -> String -> Eff (console :: CONSOLE | eff) Unit
+    lineHandler
+      :: GameState
+      -> String
+      -> Eff ( err :: EXCEPTION
+             , console :: CONSOLE
+             , readline :: RL.READLINE
+             | eff
+             ) Unit
     lineHandler currentState input = do
-      let result = runRWS (game (split " " input)) env currentState
-      for_ result.log log
-      RL.setLineHandler interface $ lineHandler result.state
+      case runRWS (game (split " " input)) env currentState of
+        RWSResult state _ written -> do
+          for_ written log
+          RL.setLineHandler interface $ lineHandler state
       RL.prompt interface
-      return unit
+      pure unit
 
   RL.setLineHandler interface $ lineHandler initialGameState
   RL.prompt interface
 
-  return unit
+  pure unit
 
-main = Y.runY (Y.usage "$0 -p <player name>") $ map runGame env
+main :: Eff ( err :: EXCEPTION
+            , console :: CONSOLE
+            , readline :: RL.READLINE
+            ) Unit
+main = runY (usage "$0 -p <player name>") $ map runGame env
   where
-  env :: Y.Y GameEnvironment
-  env = gameEnvironment <$> Y.yarg "p" ["player"] 
-                                   (Just "Player name") 
-                                   (Right "The player name is required") 
-                                   false
-                        <*> Y.flag "d" ["debug"]
-                                   (Just "Use debug mode")
-
+  env :: Y GameEnvironment
+  env = gameEnvironment <$> yarg "p" ["player"]
+                                     (Just "Player name")
+                                     (Right "The player name is required")
+                                     false
+                        <*> flag "d" ["debug"]
+                                     (Just "Use debug mode")

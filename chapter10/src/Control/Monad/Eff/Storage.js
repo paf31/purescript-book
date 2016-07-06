@@ -1,7 +1,5 @@
 "use strict";
 
-// module Control.Monad.Eff.Storage
-
 exports.setItem = function(key) {
     return function(value) {
         return function() {

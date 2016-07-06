@@ -8,22 +8,16 @@ newtype Coords = Coords
   }
 
 instance showCoords :: Show Coords where
-  show (Coords p) = "Coords " ++
-                    "{ x: " ++ show p.x ++
-                    ", y: " ++ show p.y ++
+  show (Coords p) = "Coords " <>
+                    "{ x: " <> show p.x <>
+                    ", y: " <> show p.y <>
                     " }"
 
-instance eqCoords :: Eq Coords where
-  eq (Coords p1) (Coords p2) = p1.x == p2.x && p1.y == p2.y
-
-instance ordCoords :: Ord Coords where
-  compare (Coords p1) (Coords p2) =
-    case compare p1.x p2.x of
-      EQ -> compare p1.y p2.y
-      other -> other
+derive instance eqCoords :: Eq Coords
+derive instance ordCoords :: Ord Coords
 
 coords :: Int -> Int -> Coords
 coords x y = Coords { x: x, y: y }
 
 prettyPrintCoords :: Coords -> String
-prettyPrintCoords (Coords p) = "(" ++ show p.x ++ ", " ++ show p.y ++ ")"
+prettyPrintCoords (Coords p) = "(" <> show p.x <> ", " <> show p.y <> ")"

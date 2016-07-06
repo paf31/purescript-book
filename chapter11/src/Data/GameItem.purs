@@ -2,7 +2,7 @@ module Data.GameItem where
 
 import Prelude
 
-import Data.Maybe
+import Data.Maybe (Maybe(..))
 
 data GameItem = Candle | Matches
 
@@ -10,16 +10,8 @@ instance showGameItem :: Show GameItem where
   show Candle         = "Candle"
   show Matches        = "Matches"
 
-instance eqGameItem :: Eq GameItem where
-  eq Candle      Candle      = true
-  eq Matches     Matches     = true
-  eq _           _           = false
-
-instance ordGameItem :: Ord GameItem where
-  compare Candle  Candle   = EQ
-  compare Candle  Matches  = LT
-  compare Matches Candle   = GT
-  compare Matches Matches  = EQ
+derive instance eqGameItem :: Eq GameItem
+derive instance ordGameItem :: Ord GameItem
 
 readItem :: String -> Maybe GameItem
 readItem "Candle" = Just Candle

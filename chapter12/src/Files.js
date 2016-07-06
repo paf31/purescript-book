@@ -1,7 +1,5 @@
 "use strict";
 
-// module Files
-
 exports.readFileImpl = function(path, onSuccess, onFailure) {
     return function() {
         require('fs').readFile(path, {

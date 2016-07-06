@@ -2,15 +2,12 @@ module Files where
 
 import Prelude
 
-import Types
-
-import Data.Either
-import Data.Function
-
-import Control.Monad.Eff
-
-import Control.Monad.Cont.Trans
-import Control.Monad.Except.Trans
+import Control.Monad.Cont.Trans (ContT(..))
+import Control.Monad.Eff (Eff)
+import Control.Monad.Except.Trans (ExceptT(..))
+import Data.Either (Either(..))
+import Data.Function.Uncurried (Fn4, Fn3, runFn4, runFn3)
+import Types (Async)
 
 foreign import data FS :: !
 
@@ -18,19 +15,19 @@ type ErrorCode = String
 
 type FilePath = String
 
-foreign import readFileImpl :: 
-                 forall eff. Fn3 FilePath 
-                   (String -> Eff (fs :: FS | eff) Unit) 
-                   (ErrorCode -> Eff (fs :: FS | eff) Unit) 
-                   (Eff (fs :: FS | eff) Unit) 
-                        
-foreign import writeFileImpl :: 
+foreign import readFileImpl ::
+                 forall eff. Fn3 FilePath
+                   (String -> Eff (fs :: FS | eff) Unit)
+                   (ErrorCode -> Eff (fs :: FS | eff) Unit)
+                   (Eff (fs :: FS | eff) Unit)
+
+foreign import writeFileImpl ::
                  forall eff. Fn4 FilePath
                    String
-                   (Eff (fs :: FS | eff) Unit) 
-                   (ErrorCode -> Eff (fs :: FS | eff) Unit) 
-                   (Eff (fs :: FS | eff) Unit) 
-                       
+                   (Eff (fs :: FS | eff) Unit)
+                   (ErrorCode -> Eff (fs :: FS | eff) Unit)
+                   (Eff (fs :: FS | eff) Unit)
+
 readFile :: forall eff. FilePath -> (Either ErrorCode String -> Eff (fs :: FS | eff) Unit) -> Eff (fs :: FS | eff) Unit
 readFile path k = runFn3 readFileImpl path (k <<< Right) (k <<< Left)
 
@@ -49,7 +46,7 @@ readFileContEx path = ExceptT $ readFileCont path
 writeFileContEx :: forall eff. FilePath -> String -> ExceptT ErrorCode (Async (fs :: FS | eff)) Unit
 writeFileContEx path text = ExceptT $ writeFileCont path text
 
-copyFileContEx :: forall eff. FilePath -> FilePath -> ExceptT ErrorCode (Async (fs :: FS | eff)) Unit 
+copyFileContEx :: forall eff. FilePath -> FilePath -> ExceptT ErrorCode (Async (fs :: FS | eff)) Unit
 copyFileContEx src dest = do
   content <- readFileContEx src
   writeFileContEx dest content

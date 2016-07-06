@@ -2,15 +2,10 @@ module Tree where
 
 import Prelude
 
-import Sorted
-
-import Data.Monoid
 import Data.Foldable (foldr)
+import Test.QuickCheck.Arbitrary (class Coarbitrary, class Arbitrary, coarbitrary, arbitrary)
 
-import Test.QuickCheck.Gen
-import Test.QuickCheck.Arbitrary
-
-data Tree a 
+data Tree a
   = Leaf
   | Branch (Tree a) a (Tree a)
 
@@ -19,9 +14,9 @@ instance arbTree :: (Arbitrary a, Ord a) => Arbitrary (Tree a) where
 
 instance coarbTree :: (Coarbitrary a) => Coarbitrary (Tree a) where
   coarbitrary Leaf = id
-  coarbitrary (Branch l a r) = 
-    coarbitrary l <<< 
-    coarbitrary a <<< 
+  coarbitrary (Branch l a r) =
+    coarbitrary l <<<
+    coarbitrary a <<<
     coarbitrary r
 
 insert :: forall a. (Ord a) => a -> Tree a -> Tree a
@@ -37,7 +32,7 @@ member a (Branch _ _  r) = a `member` r
 
 toArray :: forall a. Tree a -> Array a
 toArray Leaf = []
-toArray (Branch l a r) = toArray l ++ [a] ++ toArray r
+toArray (Branch l a r) = toArray l <> [a] <> toArray r
 
 fromArray :: forall a. (Ord a) => Array a -> Tree a
 fromArray = foldr insert Leaf

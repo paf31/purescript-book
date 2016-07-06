@@ -1,8 +1,11 @@
 module Test.Main where
 
-import Data.AddressBook
-import Data.AddressBook.Validation
+import Prelude
 
-import Control.Monad.Eff.Console
+import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Console (CONSOLE, logShow)
+import Data.AddressBook (examplePerson)
+import Data.AddressBook.Validation (validatePerson)
 
-main = print (validatePerson examplePerson)
+main :: Eff (console :: CONSOLE) Unit
+main = logShow (validatePerson examplePerson)

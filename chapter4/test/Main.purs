@@ -1,9 +1,12 @@
 module Test.Main where
 
-import Control.Monad.Eff.Console
+import Prelude
 
-import Data.Path
+import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Console (CONSOLE, logShow)
+import Data.Path (root)
 import Data.Foldable (for_)
-import FileOperations
+import FileOperations (allFiles)
 
-main = for_ (allFiles root) print
+main :: Eff (console :: CONSOLE) Unit
+main = for_ (allFiles root) logShow

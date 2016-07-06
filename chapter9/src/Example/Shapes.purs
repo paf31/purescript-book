@@ -2,21 +2,27 @@ module Example.Shapes where
 
 import Prelude
 
-import Data.Maybe
+import Control.Monad.Eff (Eff)
+import Data.Maybe (Maybe(..))
+import Graphics.Canvas (CANVAS, closePath, lineTo, moveTo, fillPath,
+                        setFillStyle, arc, rect, getContext2D,
+                        getCanvasElementById)
+import Math as Math
+import Partial.Unsafe (unsafePartial)
 
-import Control.Monad.Eff
-
-import Graphics.Canvas hiding (translate)
-
-translate :: forall r. Number -> Number -> 
-              { x :: Number, y :: Number | r } -> 
-              { x :: Number, y :: Number | r }
-translate dx dy shape = shape 
+translate
+  :: forall r
+   . Number
+  -> Number
+  -> { x :: Number, y :: Number | r }
+  -> { x :: Number, y :: Number | r }
+translate dx dy shape = shape
   { x = shape.x + dx
   , y = shape.y + dy
   }
 
-main = do
+main :: Eff (canvas :: CANVAS) Unit
+main = void $ unsafePartial do
   Just canvas <- getCanvasElementById "canvas"
   ctx <- getContext2D canvas
 
@@ -28,17 +34,17 @@ main = do
     , w: 100.0
     , h: 100.0
     }
-  
+
   setFillStyle "#00FF00" ctx
 
-  fillPath ctx $ arc ctx $ translate 200.0 200.0 
+  fillPath ctx $ arc ctx $ translate 200.0 200.0
     { x: 300.0
     , y: 300.0
     , r: 50.0
     , start: Math.pi * 5.0 / 8.0
     , end: Math.pi * 2.0
     }
-    
+
   setFillStyle "#FF0000" ctx
 
   fillPath ctx $ do

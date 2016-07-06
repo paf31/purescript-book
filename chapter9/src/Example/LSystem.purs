@@ -2,14 +2,15 @@ module Example.LSystem where
 
 import Prelude
 
-import Data.Maybe
+import Data.Maybe (Maybe(..))
 import Data.Array (concatMap, foldM)
+import Control.Monad.Eff (Eff)
+import Graphics.Canvas (CANVAS, strokePath, setStrokeStyle, lineTo, moveTo,
+                        getContext2D, getCanvasElementById)
+import Math as Math
+import Partial.Unsafe (unsafePartial)
 
-import Control.Monad.Eff
-
-import Graphics.Canvas hiding (translate)
-
-lsystem :: forall a m s. (Monad m) =>
+lsystem :: forall a m s. Monad m =>
                          Array a ->
                          (a -> Array a) ->
                          (s -> a -> m s) ->
@@ -30,7 +31,8 @@ type State =
   , theta :: Number
   }
 
-main = do
+main :: Eff (canvas :: CANVAS) Unit
+main = void $ unsafePartial do
   Just canvas <- getCanvasElementById "canvas"
   ctx <- getContext2D canvas
 
@@ -43,15 +45,15 @@ main = do
     productions R = [R]
     productions F = [F, L, F, R, R, F, L, F]
 
-    interpret :: State -> Alphabet -> Eff (canvas :: Canvas) State
-    interpret state L = return $ state { theta = state.theta - Math.pi / 3.0 }
-    interpret state R = return $ state { theta = state.theta + Math.pi / 3.0 }
+    interpret :: State -> Alphabet -> Eff (canvas :: CANVAS) State
+    interpret state L = pure $ state { theta = state.theta - Math.pi / 3.0 }
+    interpret state R = pure $ state { theta = state.theta + Math.pi / 3.0 }
     interpret state F = do
-      let x' = state.x + Math.cos state.theta * 1.5
-          y' = state.y + Math.sin state.theta * 1.5
+      let x = state.x + Math.cos state.theta * 1.5
+          y = state.y + Math.sin state.theta * 1.5
       moveTo ctx state.x state.y
-      lineTo ctx x' y'
-      return { x: x', y: y', theta: state.theta }
+      lineTo ctx x y
+      pure { x, y, theta: state.theta }
 
     initialState :: State
     initialState = { x: 120.0, y: 200.0, theta: 0.0 }

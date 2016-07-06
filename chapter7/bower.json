@@ -17,10 +17,14 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-validation": "~0.2.0",
-    "purescript-console": "~0.1.0",
-    "purescript-arrays": "~0.4.1",
-    "purescript-either": "~0.2.0",
-    "purescript-strings": "~0.7.0"
+    "purescript-validation": "^1.0.0",
+    "purescript-console": "^1.0.0",
+    "purescript-arrays": "^1.0.0",
+    "purescript-either": "^1.0.0",
+    "purescript-strings": "^1.0.0",
+    "purescript-lists": "^1.0.0"
+  },
+  "devDependencies": {
+    "purescript-psci-support": "^1.0.0"
   }
 }

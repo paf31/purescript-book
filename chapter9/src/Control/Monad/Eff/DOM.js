@@ -1,7 +1,5 @@
 "use strict";
 
-// module Control.Monad.Eff.DOM
-
 exports.querySelectorImpl = function(r, f, s) {
     return function() {
         var result = document.querySelector(s);

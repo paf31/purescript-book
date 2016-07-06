@@ -14,9 +14,12 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-arrays": "~0.4.0",
-    "purescript-console": "~0.1.0",
-    "purescript-math": "~0.2.0",
-    "purescript-globals": "~0.2.0"
+    "purescript-arrays": "^1.0.0",
+    "purescript-console": "^1.0.0",
+    "purescript-math": "^2.0.0",
+    "purescript-globals": "^1.0.0"
+  },
+  "devDependencies": {
+    "purescript-psci-support": "^1.0.0"
   }
 }

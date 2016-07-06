@@ -1,7 +1,7 @@
 module Data.Path
   ( Path()
   , root
-  , ls 
+  , ls
   , filename
   , isDirectory
   , size
@@ -9,11 +9,10 @@ module Data.Path
 
 import Prelude
 
-import Data.Maybe
-import Data.Array
+import Data.Maybe (Maybe(..))
 
-data Path 
-  = Directory String (Array Path) 
+data Path
+  = Directory String (Array Path)
   | File String Int
 
 instance showPath :: Show Path where
@@ -21,7 +20,7 @@ instance showPath :: Show Path where
 
 root :: Path
 root =
-  Directory "/" 
+  Directory "/"
     [ Directory "/bin/"
         [ File "/bin/cp" 24800
         , File "/bin/ls" 34700
