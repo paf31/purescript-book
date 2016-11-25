@@ -1,7 +1,6 @@
 module Data.Hashable
   ( HashCode
   , hashCode
-
   , class Hashable
   , hash
   , hashEqual
@@ -23,14 +22,13 @@ newtype HashCode = HashCode Int
 hashCode :: Int -> HashCode
 hashCode h = HashCode (h `mod` 65535)
 
-class (Eq a) <= Hashable a where
+class Eq a <= Hashable a where
   hash :: a -> HashCode
 
 instance showHashCode :: Show HashCode where
   show (HashCode h) = "(HashCode " <> show h <> ")"
 
-instance eqHashCode :: Eq HashCode where
-  eq (HashCode h1) (HashCode h2) = h1 == h2
+derive instance eqHashCode :: Eq HashCode
 
 combineHashes :: HashCode -> HashCode -> HashCode
 combineHashes (HashCode h1) (HashCode h2) = hashCode (73 * h1 + 51 * h2)
