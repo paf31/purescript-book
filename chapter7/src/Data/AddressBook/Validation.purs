@@ -1,12 +1,11 @@
 module Data.AddressBook.Validation where
 
 import Prelude
-
-import Data.AddressBook (Address(..), Person(..), PhoneNumber(..),
-                         address, person, phoneNumber)
+import Data.AddressBook (Address(..), Person(..), PhoneNumber(..), address, person, phoneNumber)
 import Data.Either (Either(..))
 import Data.String (length)
-import Data.String.Regex (Regex, test, noFlags, regex)
+import Data.String.Regex (Regex, test, regex)
+import Data.String.Regex.Flags (noFlags)
 import Data.Traversable (traverse)
 import Data.Validation.Semigroup (V, unV, invalid)
 import Partial.Unsafe (unsafePartial)
