@@ -4,15 +4,17 @@ import Prelude
 
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
+import Control.Monad.Except (runExcept)
 import Data.AddressBook (Address(..), Person(..), PhoneNumber(..), examplePerson)
 import Data.AddressBook.Validation (Errors, validatePerson')
 import Data.Array ((..), length, modifyAt, zipWith)
 import Data.Either (Either(..))
 import Data.Foldable (for_)
-import Data.Foreign (F, readString, toForeign)
+import Data.Foreign (ForeignError, readString, toForeign)
 import Data.Foreign.Index (prop)
 import Data.Maybe (fromJust, fromMaybe)
 import Data.Nullable (toMaybe)
+import Data.List.NonEmpty (NonEmptyList)
 import DOM (DOM())
 import DOM.HTML (window)
 import DOM.HTML.Types (htmlDocumentToDocument)
@@ -37,8 +39,8 @@ initialState = AppState
   , errors: []
   }
 
-valueOf :: Event -> F String
-valueOf e = do
+valueOf :: Event -> Either (NonEmptyList ForeignError) String
+valueOf e = runExcept do
   target <- prop "target" (toForeign e)
   value <- prop "value" target
   readString value
