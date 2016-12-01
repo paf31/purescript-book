@@ -1,35 +1,35 @@
 module Main where
 
 import Prelude
-
+import React.DOM as D
+import React.DOM.Props as P
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Alert (ALERT, alert)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import Control.Monad.Eff.Storage (STORAGE, setItem, getItem)
-import Data.AddressBook (Address(..), Person(..), PhoneNumber(..), PhoneType(..), phoneNumber, address, person, examplePerson)
-import Data.AddressBook.Validation (Errors, validatePerson')
-import Data.Array ((..), length, modifyAt, zipWith)
-import Data.Either (Either(..))
-import Data.Foldable (for_)
-import Data.Foreign (F, readString, toForeign)
-import Data.Foreign.Class (class IsForeign, readJSON, read, readProp)
-import Data.Foreign.Index (prop)
-import Data.Foreign.Null (unNull)
-import Data.JSON (stringify)
-import Data.Maybe (Maybe(..), fromJust, fromMaybe)
-import Data.Nullable (toMaybe)
-import Data.Traversable (traverse)
-import DOM (DOM())
+import Control.Monad.Except (runExcept)
+import DOM (DOM)
 import DOM.HTML (window)
 import DOM.HTML.Types (htmlDocumentToDocument)
 import DOM.HTML.Window (document)
 import DOM.Node.NonElementParentNode (getElementById)
 import DOM.Node.Types (ElementId(..), documentToNonElementParentNode)
+import Data.AddressBook (Address(..), Person(..), PhoneNumber(..), PhoneType(..), phoneNumber, address, person, examplePerson)
+import Data.AddressBook.Validation (Errors, validatePerson')
+import Data.Array ((..), length, modifyAt, zipWith)
+import Data.Either (Either(..))
+import Data.Foldable (for_)
+import Data.Foreign (ForeignError, readString, toForeign)
+import Data.Foreign.Class (class IsForeign, readJSON, read, readProp)
+import Data.Foreign.Index (prop)
+import Data.Foreign.Null (unNull)
+import Data.JSON (stringify)
+import Data.List.NonEmpty (NonEmptyList)
+import Data.Maybe (Maybe(..), fromJust, fromMaybe)
+import Data.Nullable (toMaybe)
+import Data.Traversable (traverse)
 import Partial.Unsafe (unsafePartial)
-import React (ReactClass, ReadWrite, ReactState, Event, ReactThis,
-              createFactory, readState, spec, createClass, writeState)
-import React.DOM as D
-import React.DOM.Props as P
+import React (ReactClass, ReadWrite, ReactState, Event, ReactThis, createFactory, readState, spec, createClass, writeState)
 import ReactDOM (render)
 
 newtype AppState = AppState
@@ -111,8 +111,8 @@ loadSavedData = do
   item <- getItem "person"
 
   let
-    savedData :: F (Maybe FormData)
-    savedData = do
+    savedData :: Either (NonEmptyList ForeignError) (Maybe FormData)
+    savedData = runExcept do
       jsonOrNull <- read item
       traverse readJSON (unNull jsonOrNull)
 
@@ -139,8 +139,8 @@ validateAndSaveEntry person = do
       setItem "person" $ stringify $ toForeign $ unsafePartial toFormData result
       alert "Saved"
 
-valueOf :: Event -> F String
-valueOf e = do
+valueOf :: Event -> Either (NonEmptyList ForeignError) String
+valueOf e = runExcept do
   target <- prop "target" (toForeign e)
   value <- prop "value" target
   readString value
