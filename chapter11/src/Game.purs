@@ -1,18 +1,19 @@
 module Game where
 
 import Prelude
-
+import Data.List as L
+import Data.Map as M
+import Data.Set as S
 import Control.Monad.RWS (RWS)
-import Control.Monad.RWS.Class (tell, get, ask, modify, put)
+import Control.Monad.Reader.Class (ask)
+import Control.Monad.State.Class (get, modify, put)
+import Control.Monad.Writer.Class (tell)
 import Data.Coords (Coords(..), prettyPrintCoords, coords)
 import Data.Foldable (for_)
 import Data.GameEnvironment (GameEnvironment(..))
 import Data.GameItem (GameItem(..), readItem)
 import Data.GameState (GameState(..))
-import Data.List as L
-import Data.Map as M
 import Data.Maybe (Maybe(..))
-import Data.Set as S
 
 type Log = L.List String
 
