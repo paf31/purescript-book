@@ -17,12 +17,12 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-arrays": "^1.0.0",
-    "purescript-quickcheck": "^1.0.0",
-    "purescript-functions": "^1.0.0",
-    "purescript-lists": "^1.0.0"
+    "purescript-arrays": "^3.0.0",
+    "purescript-quickcheck": "^3.1.0",
+    "purescript-functions": "^2.0.0",
+    "purescript-lists": "^3.0.0"
   },
   "devDependencies": {
-    "purescript-psci-support": "^1.0.0"
+    "purescript-psci-support": "^2.0.0"
   }
 }

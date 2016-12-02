@@ -5,7 +5,7 @@ import Prelude
 import Control.Monad.Cont.Trans (runContT)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log, error)
-import Control.Monad.Trans (lift)
+import Control.Monad.Trans.Class (lift)
 import Data.Either (either)
 import Network.HTTP.Client (HTTP, get)
 import Types (Async)

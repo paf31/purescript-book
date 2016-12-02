@@ -22,20 +22,19 @@ newtype Attribute = Attribute
 
 render :: Element -> String
 render (Element e) =
-  "<" <> e.name <>
-  " " <> joinWith " " (map renderAttribute e.attribs) <>
-  renderContent e.content
-
+    "<" <> e.name <>
+    " " <> joinWith " " (map renderAttribute e.attribs) <>
+    renderContent e.content
   where
-  renderAttribute :: Attribute -> String
-  renderAttribute (Attribute x) = x.key <> "=\"" <> x.value <> "\""
+    renderAttribute :: Attribute -> String
+    renderAttribute (Attribute x) = x.key <> "=\"" <> x.value <> "\""
 
-  renderContent :: Maybe (Array Content) -> String
-  renderContent Nothing = " />"
-  renderContent (Just content) =
-    ">" <> joinWith "" (map renderContentItem content) <>
-    "</" <> e.name <> ">"
-    where
-    renderContentItem :: Content -> String
-    renderContentItem (TextContent s) = s
-    renderContentItem (ElementContent e) = render e
+    renderContent :: Maybe (Array Content) -> String
+    renderContent Nothing = " />"
+    renderContent (Just content) =
+        ">" <> joinWith "" (map renderContentItem content) <>
+        "</" <> e.name <> ">"
+      where
+        renderContentItem :: Content -> String
+        renderContentItem (TextContent s) = s
+        renderContentItem (ElementContent e') = render e'
