@@ -1,4 +1,3 @@
-purescript-book
-===============
+# purescript-book
 
-Sources for the PureScript book
+Text and exercises for the PureScript book
