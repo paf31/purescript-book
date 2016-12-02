@@ -17,17 +17,16 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-canvas": "^1.0.0",
-    "purescript-lists": "^1.0.0",
-    "purescript-arrays": "^1.0.0",
+    "purescript-canvas": "^2.0.0",
+    "purescript-lists": "^3.0.0",
+    "purescript-arrays": "^3.0.0",
     "purescript-math": "^2.0.0",
-    "purescript-random": "^1.0.0",
-    "purescript-dom": "^1.0.0",
-    "purescript-foreign": "^1.0.0",
-    "purescript-refs": "^1.0.0",
-    "purescript-console": "^1.0.0"
+    "purescript-random": "^2.0.0",
+    "purescript-dom": "^3.3.0",
+    "purescript-refs": "^2.0.0",
+    "purescript-console": "^2.0.0"
   },
   "devDependencies": {
-    "purescript-psci-support": "^1.0.0"
+    "purescript-psci-support": "^2.0.0"
   }
 }

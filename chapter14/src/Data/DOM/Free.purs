@@ -110,38 +110,37 @@ height :: AttributeKey Int
 height = AttributeKey "height"
 
 render :: Element -> String
-render e = execWriter $ renderElement e
+render = execWriter <<< renderElement
   where
-  renderElement :: Element -> Writer String Unit
-  renderElement (Element e) = do
-    tell "<"
-    tell e.name
-    for_ e.attribs $ \x -> do
-      tell " "
-      renderAttribute x
-    renderContent e.content
+    renderElement :: Element -> Writer String Unit
+    renderElement (Element e) = do
+        tell "<"
+        tell e.name
+        for_ e.attribs $ \x -> do
+          tell " "
+          renderAttribute x
+        renderContent e.content
+      where
+        renderAttribute :: Attribute -> Writer String Unit
+        renderAttribute (Attribute x) = do
+          tell x.key
+          tell "=\""
+          tell x.value
+          tell "\""
 
-    where
-    renderAttribute :: Attribute -> Writer String Unit
-    renderAttribute (Attribute x) = do
-      tell x.key
-      tell "=\""
-      tell x.value
-      tell "\""
+        renderContent :: Maybe (Content Unit) -> Writer String Unit
+        renderContent Nothing = tell " />"
+        renderContent (Just content) = do
+          tell ">"
+          runFreeM renderContentItem content
+          tell "</"
+          tell e.name
+          tell ">"
 
-    renderContent :: Maybe (Content Unit) -> Writer String Unit
-    renderContent Nothing = tell " />"
-    renderContent (Just content) = do
-      tell ">"
-      runFreeM renderContentItem content
-      tell "</"
-      tell e.name
-      tell ">"
-
-    renderContentItem :: forall a. ContentF (Content a) -> Writer String (Content a)
-    renderContentItem (TextContent s rest) = do
-      tell s
-      pure rest
-    renderContentItem (ElementContent e rest) = do
-      renderElement e
-      pure rest
+        renderContentItem :: forall a. ContentF (Content a) -> Writer String (Content a)
+        renderContentItem (TextContent s rest) = do
+          tell s
+          pure rest
+        renderContentItem (ElementContent e' rest) = do
+          renderElement e'
+          pure rest
