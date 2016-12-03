@@ -502,7 +502,7 @@ class Stream stream element | stream -> element where
   uncons :: stream -> Maybe { head :: element, tail :: stream }
 ```
 
-Here, `list -> element` is called a _functional dependency_. A functional dependency asserts a functional relationship between the type arguments of a multi-parameter type class. This functional dependency tells the compiler that there is a function from stream types to (unique) element types, so if the compiler knows the stream type, then it can commit to the element type.
+Here, `stream -> element` is called a _functional dependency_. A functional dependency asserts a functional relationship between the type arguments of a multi-parameter type class. This functional dependency tells the compiler that there is a function from stream types to (unique) element types, so if the compiler knows the stream type, then it can commit to the element type.
 
 This hint is enough for the compiler to infer the correct type for our generic tail function above:
 
