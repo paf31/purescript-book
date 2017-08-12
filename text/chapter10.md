@@ -19,7 +19,10 @@ Towards the end of this chapter, we will revisit our recurring address book exam
 
 The source code for this module is a continuation of the source code from chapters 3, 7 and 8. As such, the source tree includes the appropriate source files from those chapters.
 
-This chapter adds one new Bower dependency on the `purescript-foreign` library, which provides a data type and functions for working with _untyped data_.
+This chapter adds two new Bower dependencies:
+
+1. The `purescript-foreign` library, which provides a data type and functions for working with _untyped data_.
+1. The `purescript-foreign-generic` library, which adds support for _datatype generic programming_ to the `purescript-foreign` library.
 
 _Note_: to avoid browser-specific issues with local storage when the webpage is served from a local file, it might be necessary to run this chapter's project over HTTP.
 
@@ -305,7 +308,7 @@ With these two pieces in place, we can now use the `encodeURIComponent` function
 For example, if this declaration is saved as a module and loaded into PSCi, we can reproduce the calculation above:
 
 ```text
-$ pulp psci
+$ pulp repl
 
 > import Data.URI
 > encodeURIComponent "Hello World"
@@ -359,10 +362,10 @@ Suppose we wanted to define a new type `Undefined a` whose representation at run
 We can define a _foreign type_ using the FFI using a _foreign type declaration_. The syntax is similar to defining a foreign function:
 
 ```haskell
-foreign import data Undefined :: * -> *
+foreign import data Undefined :: Type -> Type
 ```
 
-Note that the `data` keyword here indicates that we are defining a type, not a value. Instead of a type signature, we give the _kind_ of the new type. In this case, we declare the kind of `Undefined` to be `* -> *`. In other words, `Undefined` is a type constructor.
+Note that the `data` keyword here indicates that we are defining a type, not a value. Instead of a type signature, we give the _kind_ of the new type. In this case, we declare the kind of `Undefined` to be `Type -> Type`. In other words, `Undefined` is a type constructor.
 
 We can now simplify our original definition for `head`:
 
@@ -412,7 +415,7 @@ PureScript's Prelude contains an interesting set of examples of foreign types. A
 For example, the following foreign type declaration is taken from the Prelude in the `Data.Function.Uncurried` module:
 
 ```haskell
-foreign import data Fn2 :: * -> * -> * -> *
+foreign import data Fn2 :: Type -> Type -> Type -> Type
 ```
 
 This defines the type constructor `Fn2` which takes three type arguments. `Fn2 a b c` is a type representing JavaScript functions of two arguments of types `a` and `b`, and with return type `c`.
@@ -453,7 +456,7 @@ The `Eff` monad is also defined as a foreign type in the Prelude. Its runtime re
 The definition of the `Eff` type constructor is given in the `Control.Monad.Eff` module as follows:
 
 ```haskell
-foreign import data Eff :: # ! -> * -> *
+foreign import data Eff :: # Effect -> Type -> Type
 ```
 
 Recall that the `Eff` type constructor is parameterized by a row of effects and a return type, which is reflected in its kind.
@@ -477,7 +480,7 @@ Notice that the `random` function is represented at runtime as a function of no 
 As a slightly more interesting example, consider the `log` function defined by the `Control.Monad.Eff.Console` module in the `purescript-console` package. The `log` function has the following type:
 
 ```haskell
-foreign import log ::: forall eff. String -> Eff (console :: CONSOLE | eff) Unit
+foreign import log :: forall eff. String -> Eff (console :: CONSOLE | eff) Unit
 ```
 
 And here is its definition:
@@ -492,10 +495,10 @@ exports.log = function (s) {
 
 The representation of `log` at runtime is a JavaScript function of a single argument, returning a function of no arguments. The inner function performs the side-effect of writing a message to the console.
 
-The effects `RANDOM` and `CONSOLE` are also defined as foreign types. Their kinds are defined to be `!`, the kind of effects. For example:
+The effects `RANDOM` and `CONSOLE` are also defined as foreign types. Their kinds are defined to be `Effect`, the kind of effects. For example:
 
 ```haskell
-foreign import data RANDOM :: !
+foreign import data RANDOM :: Effect
 ```
 
 In fact, it is possible to define new effects in this way, as we will soon see.
@@ -515,10 +518,10 @@ The source code for this chapter defines two new effects. The simplest is the `A
 The effect is defined first, using a foreign type declaration:
 
 ```haskell
-foreign import data ALERT :: !
+foreign import data ALERT :: Effect
 ```
 
-`ALERT` is given the kind `!`, indicating that it represents an effect, as opposed to a type.
+`ALERT` is given the kind `Effect`, indicating that it represents an effect, as opposed to a type.
 
 Next, the `alert` action is defined. The `alert` action displays a popup, and adds the `ALERT` effect to the row of effects:
 
@@ -548,7 +551,7 @@ The second effect defined in this chapter is the `STORAGE` effect, which is defi
 The effect is defined in the same way:
 
 ```haskell
-foreign import data STORAGE :: !
+foreign import data STORAGE :: Effect
 ```
 
 The `Control.Monad.Eff.Storage` module defines two actions: `getItem`, which retrieves a value from local storage, and `setItem` which inserts or updates a value in local storage. The two functions have the following types:
@@ -604,18 +607,21 @@ The problem is that we have no guarantee that the JSON will have the correct for
 - A JSON response from a web service
 - A value passed to a function from JavaScript code
 
-Let's try the `purescript-foreign` library in PSCi. Start by importing two modules:
+Let's try the `purescript-foreign` and `purescript-foreign-generic` libraries in PSCi.
+
+Start by importing some modules:
 
 ```text
 > import Data.Foreign
-> import Data.Foreign.Class
+> import Data.Foreign.Generic
+> import Data.Foreign.JSON
 ```
 
-A good way to obtain a `Foreign` value is to parse a JSON document. `purescript-foreign` defines the following two functions:
+A good way to obtain a `Foreign` value is to parse a JSON document. `purescript-foreign-generic` defines the following two functions:
 
 ```haskell
 parseJSON :: String -> F Foreign
-readJSON :: forall a. IsForeign a => String -> F a
+decodeJSON :: forall a. Decode a => String -> F a
 ```
 
 The type constructor `F` is actually just a type synonym, defined in `Data.Foreign`:
@@ -626,122 +632,93 @@ type F = Except (NonEmptyList ForeignError)
 
 Here, `Except` is an monad for handling exceptions in pure code, much like `Either`. We can convert a value in the `F` monad into a value in the `Either` monad by using the `runExcept` function.
 
-Most of the functions in the `purescript-foreign` library return a value in the `F` monad, which means that we can use do notation and the applicative functor combinators to build typed values.
+Most of the functions in the `purescript-foreign` and `purescript-foreign-generic` libraries return a value in the `F` monad, which means that we can use do notation and the applicative functor combinators to build typed values.
 
-The `IsForeign` type class represents those types which can be obtained from untyped data. There are type class instances defined for the primitive types and arrays, and we can define our own instances as well.
+The `Decode` type class represents those types which can be obtained from untyped data. There are type class instances defined for the primitive types and arrays, and we can define our own instances as well.
 
-Let's try parsing some simple JSON documents using `readJSON` in PSCi (remembering to use `runExcept` to unwrap the results):
+Let's try parsing some simple JSON documents using `decodeJSON` in PSCi (remembering to use `runExcept` to unwrap the results):
 
 ```text
-> runExcept (readJSON "\"Testing\"" :: F String)
+> import Control.Monad.Except
+
+> runExcept (decodeJSON "\"Testing\"" :: F String)
 Right "Testing"
 
-> runExcept (readJSON "true" :: F Boolean)
+> runExcept (decodeJSON "true" :: F Boolean)
 Right true
 
-> runExcept (readJSON "[1, 2, 3]" :: F (Array Int))
+> runExcept (decodeJSON "[1, 2, 3]" :: F (Array Int))
 Right [1, 2, 3]
 ```
 
 Recall that in the `Either` monad, the `Right` data constructor indicates success. Note however, that invalid JSON, or an incorrect type leads to an error:
 
 ```text
-> import Control.Monad.Except
-
-> runExcept (readJSON "[1, 2, true]" :: F (Array Int))
+> runExcept (decodeJSON "[1, 2, true]" :: F (Array Int))
 (Left (NonEmptyList (NonEmpty (ErrorAtIndex 2 (TypeMismatch "Int" "Boolean")) Nil)))
 ```
 
-The `purescript-foreign` library tells us where in the JSON document the type error occurred.
+The `purescript-foreign-generic` library tells us where in the JSON document the type error occurred.
 
 ## Handling Null and Undefined Values
 
 Real-world JSON documents contain null and undefined values, so we need to be able to handle those too.
 
-`purescript-foreign` defines three type constructors which solve this problem: `Null`, `Undefined` and `NullOrUndefined`. They serve a similar purpose to the `Undefined` type constructor that we defined earlier, but use the `Maybe` type constructor internally to represent missing values.
+`purescript-foreign-generic` defines a type constructors which solves this problem: `NullOrUndefined`. It serves a similar purpose to the `Undefined` type constructor that we defined earlier, but uses the `Maybe` type constructor internally to represent missing values.
 
-Each type constructor provides a function to unwrap the inner value: `unNull`, `unUndefined` and `unNullOrUndefined`. We can lift the appropriate function over the `readJSON` action to parse JSON documents which permit null values:
+The module also provides a function `unNullOrUndefined` to unwrap the inner value. We can lift the appropriate function over the `decodeJSON` action to parse JSON documents which permit null values:
 
 ```text
 > import Prelude
-> import Data.Foreign.Null
+> import Data.Foreign.NullOrUndefined
 
-> runExcept (unNull <$> readJSON "42" :: F (Null Int))
+> runExcept (unNullOrUndefined <$> decodeJSON "42" :: F (NullOrUndefined Int))
 (Right (Just 42))
 
-> runExcept (unNull <$> readJSON "null" :: F (Null Int))
+> runExcept (unNullOrUndefined <$> decodeJSON "null" :: F (NullOrUndefined Int))
 (Right Nothing)
 ```
 
-In each case, the type annotation applies to the term to the right of the `<$>` operator. For example, `readJSON "42"` has the type `F (Null Int)`. The `unNull` function is then lifted over `F` to give the final type `F (Maybe Int)`.
+In each case, the type annotation applies to the term to the right of the `<$>` operator. For example, `decodeJSON "42"` has the type `F (NullOrUndefined Int)`. The `unNullOrUndefined` function is then lifted over `F` to give the final type `F (Maybe Int)`.
 
-The type `Null Int` represents values which are either integers, or null. What if we wanted to parse more interesting values, like arrays of integers, where each element might be `null`? In that case, we could lift the function `map unNull` over the `readJSON` action, as follows:
+The type `NullOrUndefined Int` represents values which are either integers, or null. What if we wanted to parse more interesting values, like arrays of integers, where each element might be `null`? In that case, we could lift the function `map unNullOrUndefined` over the `decodeJSON` action, as follows:
 
 ```text
-> runExcept (map unNull <$> readJSON "[1, 2, null]" :: F (Array (Null Int)))
+> runExcept (map unNullOrUndefined <$> decodeJSON "[1, 2, null]" :: F (Array (NullOrUndefined Int)))
 (Right [(Just 1),(Just 2),Nothing])
 ```
 
-In general, using newtypes to wrap an existing type is a good way to provide different serialization strategies for the same type. Each of the `Null`, `Undefined` and `NullOrUndefined` types are defined as newtypes around the `Maybe` type constructor.
+In general, using newtypes to wrap an existing type is a good way to provide different serialization strategies for the same type. The `NullOrUndefined` type is defined as a newtype around the `Maybe` type constructor.
 
-## Serializing Address Book Entries
+## Generic JSON Serialization
 
-The form data is serialized using the `JSON.stringify` method, which is wrapped by a function defined in the `Data.JSON` module:
+In fact, we rarely need to write instances for the `Decode` class, since the `purescript-foreign-generic` class allows us to _derive_ instances using a technique called _datatype-generic programming_. A full explanation of this technique is beyond the scope of this book, but it allows us to write functions once, and reuse them over many different data types, based on the structure of a the types themselves.
 
-```haskell
-foreign import stringify :: Foreign -> String
-```
-
-```javascript
-exports.stringify = function(x) {
-    return JSON.stringify(x);
-};
-```
-
-When the Save button is clicked, a value of type `FormData` is passed to the `stringify` function (after being converted to a `Foreign` value), serializing it as a JSON document. The `FormData` type is a newtype for a record, so a value of type `FormData` passed to `JSON.stringify` will be serialized as a JSON _object_. This is because newtypes have the same runtime representation as their underlying data.
-
-To be able to parse the generated JSON document, we need to be able to read object properties. The `purescript-foreign` library provides this functionality in the `(!)` operator and the `readProp` action:
+To derive a `Decode` instance for our `FormData` type (so that we may deserialize it from its JSON representation), we first use the `derive` keyword to derive an instance of the `Generic` type class, which looks like this:
 
 ```haskell
-(!) :: Index i => Foreign -> i -> F Foreign
-readProp :: forall a i. (IsForeign a, Index i) => i -> Foreign -> F a
+derive instance genericFormData :: Generic FormData _
 ```
 
-The type class `Index` represents those types which can be used to index properties on foreign values. Instances are provided for `String` (for accessing object properties) and `Int` (for accessing array elements).
-
-We can define an instance of `IsForeign` for the `FormData` type by using the `readProp` action. We need to implement the `read` function, which is defined by the `IsForeign` type class as follows:
+Next, we simply define the `decode` function using the `genericDecode` function, as follows:
 
 ```haskell
-class IsForeign a where
-  read :: Foreign -> F a
+instance decodeFormData :: Decode FormData where
+  decode = genericDecode (defaultOptions { unwrapSingleConstructors = true })
 ```
 
-To implement the `read` function, we can use the `Monad` structure of `F`, to build the `FormData` structure from smaller parts. This is a good opportunity to use record punning to simplify the final record:
+In fact, we can also derive an _encoder_ in the same way:
 
 ```haskell
-instance formDataIsForeign :: IsForeign FormData where
-  read value = do
-    firstName   <- readProp "firstName" value
-    lastName    <- readProp "lastName"  value
-    street      <- readProp "street"    value
-    city        <- readProp "city"      value
-    state       <- readProp "state"     value
-    homePhone   <- readProp "homePhone" value
-    cellPhone   <- readProp "cellPhone" value
-    pure $ FormData
-      { firstName
-      , lastName
-      , street
-      , city
-      , state
-      , homePhone
-      , cellPhone
-      }
+instance encodeFormData :: Encode FormData where
+  encode = genericEncode (defaultOptions { unwrapSingleConstructors = true })
 ```
 
-This code might also be written using the `Applicative` structure of `F`, by lifting a constructor function for `FormData` over the `F` type constructor. This is left as an exercise.
+It is important that we use the same options in the decoder and encoder, otherwise our encoded JSON documents might not get decoded correctly.
 
-This type class instance is used with `readJSON` to parse the JSON document retrieved from local storage, as follows:
+Now, when the Save button is clicked, a value of type `FormData` is passed to the `encode` function, serializing it as a JSON document. The `FormData` type is a newtype for a record, so a value of type `FormData` passed to `encode` will be serialized as a JSON _object_. This is because we used the `unwrapSingleConstructors` option when defining our JSON encoder.
+
+Our `Decode` type class instance is used with `decodeJSON` to parse the JSON document when it is retrieved from local storage, as follows:
 
 ```haskell
 loadSavedData = do
@@ -750,13 +727,13 @@ loadSavedData = do
   let
     savedData :: Either (NonEmptyList ForeignError) (Maybe FormData)
     savedData = runExcept do
-      jsonOrNull <- read item
-      traverse readJSON (unNull jsonOrNull)
+      jsonOrNull <- traverse readString =<< readNullOrUndefined item
+      traverse decodeJSON jsonOrNull
 ```
 
-The `savedData` action reads the `FormData` structure in two steps: first, it parses the `Foreign` value obtained from `getItem`. The type of `jsonOrNull` is inferred by the compiler to be `Null String` (exercise for the reader - how is this type inferred?). The `traverse` function is then used to apply `readJSON` to the (possibly missing) element of the result of type `Maybe String`. The type class instance inferred for `readJSON` is the one we just wrote, resulting in a value of type `F (Maybe FormData)`.
+The `savedData` action reads the `FormData` structure in two steps: first, it parses the `Foreign` value obtained from `getItem`. The type of `jsonOrNull` is inferred by the compiler to be `Maybe String` (exercise for the reader - how is this type inferred?). The `traverse` function is then used to apply `decodeJSON` to the (possibly missing) element of the result of type `Maybe String`. The type class instance inferred for `decodeJSON` is the one we just wrote, resulting in a value of type `F (Maybe FormData)`.
 
-We need to use the monadic structure of `F`, since the argument to `traverse` uses the result `jsonOrNull` of `read` obtained in the first line.
+We need to use the monadic structure of `F`, since the argument to `traverse` uses the result `jsonOrNull` obtained in the first line.
 
 There are three possibilities for the result of `FormData`:
 
@@ -770,27 +747,24 @@ _Note_: You may need to serve the HTML and Javascript files from a HTTP server l
 
 X> ## Exercises
 X>
-X> 1. (Easy) Use `readJSON` to parse a JSON document representing a two-dimensional JavaScript array of integers, such as `[[1, 2, 3], [4, 5], [6]]`. What if the elements are allowed to be null? What if the arrays themselves are allowed to be null?
-X> 1. (Medium) Rewrite the `formDataIsForeign` type class instance to use the applicative combinators `<$>` and `<*>`.
+X> 1. (Easy) Use `decodeJSON` to parse a JSON document representing a two-dimensional JavaScript array of integers, such as `[[1, 2, 3], [4, 5], [6]]`. What if the elements are allowed to be null? What if the arrays themselves are allowed to be null?
 X> 1. (Medium) Convince yourself that the implementation of `savedData` should type-check, and write down the inferred types of each subexpression in the computation.
-X> 1. (Difficult) The following `newtype` indicates that the underlying value of type `Either a b` should be (de)serialized as a _tagged_ union:
-X>
-X>     ```haskell
-X>     newtype Tagged a b = Tagged (Either a b)
-X>     ```
-X>
-X>     That is, the serialized JSON document should contain a `tag` property which indicates whether the `Left` or `Right` constructor was used to construct the value. The actual value should be stored in the `value` property of the JSON document.
-X>
-X>     For example, the JSON `{ tag: "Left", value: 0 }` should deserialize as `Left 0`.
-X>
-X>     Write an appropriate instance for `IsForeign` for the `Tagged` type constructor.
-X> 1. (Difficult, Extended) The following data type represents a binary tree with values at the leaves:
+X> 1. (Medium) The following data type represents a binary tree with values at the leaves:
 X>
 X>     ```haskell
 X>     data Tree a = Leaf a | Branch (Tree a) (Tree a)
 X>     ```
 X>
-X>     Choose an appropriate representation for this type as a JSON document. Write a function to serialize a binary tree to JSON by using `JSON.stringify` and an intermediate record `newtype`, and write a corresponding instance of `IsForeign`.
+X>     Derive `Encode` and `Decode` instances for this type using `purescript-foreign-generic`, and verify that encoded values can correctly be decoded in PSCi.
+X> 1. (Difficult) The following `data` type should be represented directly in JSON as either an integer or a string:
+X>
+X>     ```haskell
+X>     data IntOrString
+X>       = IntOrString_Int Int
+X>       | IntOrString_String String
+X>     ```
+X>
+X>     Write instances for `Encode` and `Decode` for the `IntOrString` data type which implement this behavior, and verify that encoded values can correctly be decoded in PSCi.
 
 ## Conclusion
 
@@ -799,6 +773,6 @@ In this chapter, we've learned how to work with foreign JavaScript code from Pur
 - We've seen the importance of the _runtime representation_ of data, and ensuring that foreign functions have the correct representation.
 - We learned how to deal with corner cases like null values and other types of JavaScript data, by using foreign types, or the `Foreign` data type.
 - We looked at some common foreign types defined in the Prelude, and how they can be used to interoperate with idiomatic JavaScript code. In particular, the representation of side-effects in the `Eff` monad was introduced, and we saw how to use the `Eff` monad to capture new side effects.
-- We saw how to safely deserialize JSON data using the `IsForeign` type class.
+- We saw how to safely deserialize JSON data using the `Decode` type class.
 
 For more examples, the `purescript`, `purescript-contrib` and `purescript-node` GitHub organizations provide plenty of examples of libraries which use the FFI. In the remaining chapters, we will see some of these libraries put to use to solve real-world problems in a type-safe way.

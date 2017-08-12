@@ -17,12 +17,12 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-console": "^2.0.0",
-    "purescript-dom": "^3.1.0",
-    "purescript-foreign": "^3.0.0",
-    "purescript-react-dom": "^2.0.0",
-    "purescript-react": "^2.0.0",
-    "purescript-strings": "^2.0.0",
-    "purescript-validation": "^2.0.0"
+    "purescript-console": "^3.0.0",
+    "purescript-dom": "^4.0.0",
+    "purescript-foreign": "^4.0.0",
+    "purescript-react-dom": "^3.0.0",
+    "purescript-react": "^3.0.0",
+    "purescript-strings": "^3.0.0",
+    "purescript-validation": "^3.0.0"
   }
 }

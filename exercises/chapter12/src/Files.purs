@@ -3,13 +3,13 @@ module Files where
 import Prelude
 
 import Control.Monad.Cont.Trans (ContT(..))
-import Control.Monad.Eff (Eff)
+import Control.Monad.Eff (kind Effect, Eff)
 import Control.Monad.Except.Trans (ExceptT(..))
 import Data.Either (Either(..))
 import Data.Function.Uncurried (Fn4, Fn3, runFn4, runFn3)
 import Types (Async)
 
-foreign import data FS :: !
+foreign import data FS :: Effect
 
 type ErrorCode = String
 

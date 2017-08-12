@@ -366,7 +366,7 @@ Let's see an example. The monad transformer version of the `State` monad is `Sta
 ```text
 > import Control.Monad.State.Trans
 > :kind StateT
-* -> (* -> *) -> * -> *
+Type -> (Type -> Type) -> Type -> Type
 ```
 
 This looks quite confusing, but we can apply `StateT` one argument at a time to understand how to use it.
@@ -375,24 +375,24 @@ The first type argument is the type of the state we wish to use, as was the case
 
 ```text
 > :kind StateT String
-(* -> *) -> * -> *
+(Type -> Type) -> Type -> Type
 ```
 
-The next argument is a type constructor of kind `* -> *`. It represents the underlying monad, which we want to add the effects of `StateT` to. For the sake of an example, let's choose the `Either String` monad:
+The next argument is a type constructor of kind `Type -> Type`. It represents the underlying monad, which we want to add the effects of `StateT` to. For the sake of an example, let's choose the `Either String` monad:
 
 ```text
 > :kind StateT String (Either String)
-* -> *
+Type -> Type
 ```
 
 We are left with a type constructor. The final argument represents the return type, and we might instantiate it to `Number` for example:
 
 ```text
 > :kind StateT String (Either String) Number
-*
+Type
 ```
 
-Finally we are left with something of kind `*`, which means we can try to find values of this type.
+Finally we are left with something of kind `Type`, which means we can try to find values of this type.
 
 The monad we have constructed - `StateT String (Either String)` - represents computations which can fail with an error, and which can use mutable state.
 
@@ -523,7 +523,7 @@ If we test this computation in PSCi, we see that the state is appended to the lo
 Note that we have to remove the side-effects in the order in which they appear in the monad transformer stack: first we use `runStateT` to remove the `StateT` type constructor, then `runWriterT`, then `runExceptT`. Finally, we run the computation in the `Identity` monad by using `runIdentity`.
 
 ```text
-> let runParser p s = runIdentity $ runExceptT $ runWriterT $ runStateT p s
+> runParser p s = runIdentity $ runExceptT $ runWriterT $ runStateT p s
 
 > runParser split "test"
 (Right (Tuple (Tuple "t" "est") ["The state is test"]))
@@ -581,9 +581,9 @@ modify :: forall s. (s -> s) -> State s Unit
 In reality, the types given in the `Control.Monad.State.Class` module are more general than this:
 
 ```haskell
-get    :: forall m s. (MonadState s m) =>             m s
-put    :: forall m s. (MonadState s m) => s        -> m Unit
-modify :: forall m s. (MonadState s m) => (s -> s) -> m Unit
+get    :: forall m s. MonadState s m =>             m s
+put    :: forall m s. MonadState s m => s        -> m Unit
+modify :: forall m s. MonadState s m => (s -> s) -> m Unit
 ```
 
 The `Control.Monad.State.Class` module defines the `MonadState` (multi-parameter) type class, which allows us to abstract over "monads which support pure mutable state". As one would expect, the `State s` type constructor is an instance of the `MonadState s` type class, but there are many more interesting instances of this class.
@@ -627,8 +627,8 @@ class (Applicative f, Plus f) <= Alternative f
 The `Data.List` module provides two useful functions for working with type constructors in the `Alternative` type class:
 
 ```haskell
-many :: forall f a. (Alternative f, Lazy (f (List a))) => f a -> f (List a)
-some :: forall f a. (Alternative f, Lazy (f (List a))) => f a -> f (List a)
+many :: forall f a. Alternative f => Lazy (f (List a)) => f a -> f (List a)
+some :: forall f a. Alternative f => Lazy (f (List a)) => f a -> f (List a)
 ```
 
 The `many` combinator uses the `Alternative` type class to repeatedly run a computation _zero-or-more_ times. The `some` combinator is similar, but requires at least the first computation to succeed.
@@ -697,7 +697,7 @@ lower = do
 With this, we can define a parser which eagerly matches many upper case characters if the first character is upper case, or many lower case character if the first character is lower case:
 
 ```text
-> let upperOrLower = some upper <|> some lower
+> upperOrLower = some upper <|> some lower
 ```
 
 This parser will match characters until the case changes:
@@ -714,7 +714,7 @@ This parser will match characters until the case changes:
 We can even use `many` to fully split a string into its lower and upper case components:
 
 ```text
-> let components = many upperOrLower
+> components = many upperOrLower
 
 > runParser components "abCDeFgh"
 (Right (Tuple (Tuple [["a","b"],["C","D"],["e"],["F"],["g","h"]] "")
@@ -909,7 +909,7 @@ The front-end of our application is defined by a function `runGame`, with the fo
 runGame
   :: forall eff
    . GameEnvironment
-  -> Eff ( err :: EXCEPTION
+  -> Eff ( exception :: EXCEPTION
          , readline :: RL.READLINE
          , console :: CONSOLE
          | eff
@@ -949,7 +949,7 @@ In our case, we are interested in implementing the line handler function. Our li
 lineHandler
   :: GameState
   -> String
-  -> Eff ( err :: EXCEPTION
+  -> Eff ( exception :: EXCEPTION
          , console :: CONSOLE
          , readline :: RL.READLINE
          | eff
@@ -994,8 +994,8 @@ The final piece of the application is responsible for parsing command line optio
 ```haskell
 runY :: forall a eff.
           YargsSetup ->
-          Y (Eff (err :: EXCEPTION, console :: CONSOLE | eff) a) ->
-             Eff (err :: EXCEPTION, console :: CONSOLE | eff) a
+          Y (Eff (exception :: EXCEPTION, console :: CONSOLE | eff) a) ->
+             Eff (exception :: EXCEPTION, console :: CONSOLE | eff) a
 ```
 
 This is best illustrated by example. The application's `main` function is defined using `runY` as follows:

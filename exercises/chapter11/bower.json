@@ -17,14 +17,14 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-maps": "^2.0.0",
-    "purescript-node-readline": "^2.0.0",
-    "purescript-sets": "^2.0.0",
-    "purescript-strings": "^2.0.0",
-    "purescript-transformers": "^2.0.0",
-    "purescript-yargs": "^2.0.0"
+    "purescript-maps": "^3.0.0",
+    "purescript-node-readline": "^3.0.0",
+    "purescript-sets": "^3.0.0",
+    "purescript-strings": "^3.0.0",
+    "purescript-transformers": "^3.0.0",
+    "purescript-yargs": "^3.0.0"
   },
   "devDependencies": {
-    "purescript-psci-support": "^2.0.0"
+    "purescript-psci-support": "^3.0.0"
   }
 }

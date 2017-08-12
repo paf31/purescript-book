@@ -10,7 +10,7 @@ Our first project will be a very simple PureScript library, which will provide a
 
 Here are the tools we will be using to set up our PureScript development environment:
 
-- [`psc`](http://purescript.org) - The PureScript compiler itself.
+- [`purs`](http://purescript.org) - The PureScript compiler itself.
 - [`npm`](http://npmjs.org) - The Node Package Manager, which will allow us to install the rest of our development tools.
 - [Pulp](https://github.com/bodil/pulp) - A command-line tool which automates many of the tasks associated with managing PureScript projects.
 
@@ -23,12 +23,12 @@ The recommended approach to installing the PureScript compiler is to download a 
 You should verify that the PureScript compiler executables are available on your path. Try running the PureScript compiler on the command line to verify this:
 
 ```text
-$ psc
+$ purs
 ```
 
 Other options for installing the PureScript compiler include:
 
-- Using a popular package manager, such as NPM or Homebrew (on MacOS).
+- Via NPM: `npm install -g PureScript`.
 - Building the compiler from source. Instructions can be found on the PureScript website.
 
 ## Installing Tools
@@ -213,10 +213,10 @@ $ pulp run
 
 The PureScript compiler also ships with an interactive REPL called PSCi. This can be very useful for testing your code, and experimenting with new ideas. Let's use PSCi to test the `diagonal` function.
 
-Pulp can load source modules into PSCi automatically, via the `pulp psci` command:
+Pulp can load source modules into PSCi automatically, via the `pulp repl` command:
 
 ```text
-$ pulp psci
+$ pulp repl
 >
 ```
 
@@ -267,7 +267,7 @@ Let's try out our new `diagonal` function in PSCi:
 You can also use PSCi to define functions:
 
 ```text
-> let double x = x * 2
+> double x = x * 2
 
 > double 10
 20
@@ -289,7 +289,7 @@ Try out the interactive mode now. If you get stuck at any point, simply use the 
 
 X> ## Exercises
 X>
-X> 1. (Easy) Use the `Math.pi` constant to write a function `circleArea` which computes the area of a circle with a given radius. Test your function using PSCi (_Hint_: don't forget to import `pi` by modifying the `import Math` statement).
+X> 1. (Easy) Use the `pi` constant, which is defined in the `Math` module, to write a function `circleArea` which computes the area of a circle with a given radius. Test your function using PSCi (_Hint_: don't forget to import `pi` by modifying the `import Math` statement).
 X> 1. (Medium) Use `bower install` to install the `purescript-globals` package as a dependency. Test out its functions in PSCi (_Hint_: you can use the `:browse` command in PSCi to browse the contents of a module).
 
 ## Conclusion

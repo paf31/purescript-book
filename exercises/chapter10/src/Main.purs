@@ -1,8 +1,7 @@
 module Main where
 
 import Prelude
-import React.DOM as D
-import React.DOM.Props as P
+
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Alert (ALERT, alert)
 import Control.Monad.Eff.Console (CONSOLE, log)
@@ -18,18 +17,19 @@ import Data.AddressBook (Address(..), Person(..), PhoneNumber(..), PhoneType(..)
 import Data.AddressBook.Validation (Errors, validatePerson')
 import Data.Array ((..), length, modifyAt, zipWith)
 import Data.Either (Either(..))
-import Data.Foldable (for_)
-import Data.Foreign (ForeignError, readString, toForeign)
-import Data.Foreign.Class (class IsForeign, readJSON, read, readProp)
-import Data.Foreign.Index (prop)
-import Data.Foreign.Null (unNull)
-import Data.JSON (stringify)
+import Data.Foldable (foldMap, for_)
+import Data.Foreign (ForeignError, readNullOrUndefined, readString, renderForeignError, toForeign)
+import Data.Foreign.Class (class Decode, class Encode)
+import Data.Foreign.Generic (decodeJSON, defaultOptions, encodeJSON, genericDecode, genericEncode)
+import Data.Foreign.Index (index)
+import Data.Generic.Rep (class Generic)
 import Data.List.NonEmpty (NonEmptyList)
 import Data.Maybe (Maybe(..), fromJust, fromMaybe)
-import Data.Nullable (toMaybe)
 import Data.Traversable (traverse)
 import Partial.Unsafe (unsafePartial)
 import React (ReactClass, ReadWrite, ReactState, Event, ReactThis, createFactory, readState, spec, createClass, writeState)
+import React.DOM as D
+import React.DOM.Props as P
 import ReactDOM (render)
 
 newtype AppState = AppState
@@ -65,24 +65,13 @@ newtype FormData = FormData
   , cellPhone  :: String
   }
 
-instance formDataIsForeign :: IsForeign FormData where
-  read value = do
-    firstName   <- readProp "firstName" value
-    lastName    <- readProp "lastName"  value
-    street      <- readProp "street"    value
-    city        <- readProp "city"      value
-    state       <- readProp "state"     value
-    homePhone   <- readProp "homePhone" value
-    cellPhone   <- readProp "cellPhone" value
-    pure $ FormData
-      { firstName
-      , lastName
-      , street
-      , city
-      , state
-      , homePhone
-      , cellPhone
-      }
+derive instance genericFormData :: Generic FormData _
+
+instance decodeFormData :: Decode FormData where
+  decode = genericDecode (defaultOptions { unwrapSingleConstructors = true })
+
+instance encodeFormData :: Encode FormData where
+  encode = genericEncode (defaultOptions { unwrapSingleConstructors = true })
 
 toFormData :: Partial => Person -> FormData
 toFormData (Person p@{ homeAddress: Address a
@@ -113,12 +102,12 @@ loadSavedData = do
   let
     savedData :: Either (NonEmptyList ForeignError) (Maybe FormData)
     savedData = runExcept do
-      jsonOrNull <- read item
-      traverse readJSON (unNull jsonOrNull)
+      jsonOrNull <- traverse readString =<< readNullOrUndefined item
+      traverse decodeJSON jsonOrNull
 
   case savedData of
     Left err -> do
-      alert $ "Unable to read saved form data: " <> show err
+      alert $ "Unable to read saved form data: " <> foldMap (("\n" <> _) <<< renderForeignError) err
       pure Nothing
     Right mdata -> pure mdata
 
@@ -136,13 +125,13 @@ validateAndSaveEntry person = do
   case validatePerson' person of
     Left errs -> alert $ "There are " <> show (length errs) <> " validation errors."
     Right result -> do
-      setItem "person" $ stringify $ toForeign $ unsafePartial toFormData result
+      setItem "person" $ encodeJSON $ unsafePartial toFormData result
       alert "Saved"
 
 valueOf :: Event -> Either (NonEmptyList ForeignError) String
 valueOf e = runExcept do
-  target <- prop "target" (toForeign e)
-  value <- prop "value" target
+  target <- index (toForeign e) "target"
+  value <- index target "value"
   readString value
 
 updateAppState
@@ -249,4 +238,4 @@ main = void do
   let component = D.div [] [ createFactory (addressBook (initialState formData)) unit ]
   doc <- window >>= document
   ctr <- getElementById (ElementId "main") (documentToNonElementParentNode (htmlDocumentToDocument doc))
-  render component (unsafePartial fromJust (toMaybe ctr))
+  render component (unsafePartial fromJust ctr)

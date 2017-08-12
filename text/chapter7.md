@@ -201,7 +201,7 @@ Here is a simple example function defined in PSCi, which joins three names to fo
 ```text
 > import Prelude
 
-> let fullName first middle last = last <> ", " <> first <> " " <> middle
+> fullName first middle last = last <> ", " <> first <> " " <> middle
 
 > fullName "Phillip" "A" "Freeman"
 Freeman, Phillip A
@@ -227,8 +227,8 @@ Instead of lifting over `Maybe`, we can lift over `Either String`, which allows 
 
 ```text
 > :paste
-… let withError Nothing  err = Left err
-…     withError (Just a) _   = Right a
+… withError Nothing  err = Left err
+… withError (Just a) _   = Right a
 … ^D
 ```
 
@@ -238,10 +238,10 @@ Now we can lift over `Either String`, providing an appropriate error message for
 
 ```text
 > :paste
-… let fullNameEither first middle last =
-…     fullName <$> (first  `withError` "First name was missing")
-…              <*> (middle `withError` "Middle name was missing")
-…              <*> (last   `withError` "Last name was missing")
+… fullNameEither first middle last =
+…   fullName <$> (first  `withError` "First name was missing")
+…            <*> (middle `withError` "Middle name was missing")
+…            <*> (last   `withError` "Last name was missing")
 … ^D
 
 > :type fullNameEither
@@ -378,7 +378,7 @@ Person
                 , number: "555-555-5555"
                 }
             , PhoneNumber
-                { type: CellPghone
+                { type: CellPhone
                 , number: "555-555-0000"
                 }
             ]
@@ -558,7 +558,7 @@ In general, `traverse` walks over the elements of a data structure, performing c
 The type signature for `Traversable`'s other function `sequence` might look more familiar:
 
 ```haskell
-sequence :: forall a f. Applicative m => t (f a) -> f (t a)
+sequence :: forall a f. Applicative f => t (f a) -> f (t a)
 ```
 
 In fact, the `combineList` function that we wrote earlier is just a special case of the `sequence` function from the `Traversable` type class. Setting `t` to be the type constructor `List`, we recover the type of the `combineList` function:

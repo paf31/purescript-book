@@ -3,12 +3,12 @@ module Network.HTTP.Client where
 import Prelude
 
 import Control.Monad.Cont.Trans (ContT(..))
-import Control.Monad.Eff (Eff)
+import Control.Monad.Eff (kind Effect, Eff)
 import Data.Either (Either(..))
 import Data.Function.Uncurried (Fn3, runFn3)
 import Types (Async)
 
-foreign import data HTTP :: !
+foreign import data HTTP :: Effect
 
 type URI = String
 

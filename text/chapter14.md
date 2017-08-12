@@ -52,7 +52,7 @@ render :: Element -> String
 which renders HTML elements as HTML strings. We can try out this version of the library by constructing values of the appropriate types explicitly in PSCi:
 
 ```text
-$ pulp psci
+$ pulp repl
 
 > import Prelude
 > import Data.DOM.Simple
@@ -234,7 +234,7 @@ module Data.DOM.Smart
 If we try this new module in PSCi, we can already see massive improvements in the conciseness of the user code:
 
 ```text
-$ pulp psci
+$ pulp repl
 
 > import Prelude
 > import Data.DOM.Smart
@@ -397,7 +397,7 @@ The `Free` monad is defined in the `purescript-free` library, in the `Control.Mo
 > import Control.Monad.Free
 
 > :kind Free
-(* -> *) -> * -> *
+(Type -> Type) -> Type -> Type
 ```
 
 The kind of `Free` indicates that it takes a type constructor as an argument, and returns another type constructor. In fact, the `Free` monad can be used to turn any `Functor` into a `Monad`!

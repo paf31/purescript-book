@@ -14,12 +14,12 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-arrays": "^3.0.0",
-    "purescript-console": "^2.0.0",
+    "purescript-arrays": "^4.0.0",
+    "purescript-console": "^3.0.0",
     "purescript-math": "^2.0.0",
-    "purescript-globals": "^2.0.0"
+    "purescript-globals": "^3.0.0"
   },
   "devDependencies": {
-    "purescript-psci-support": "^2.0.0"
+    "purescript-psci-support": "^3.0.0"
   }
 }

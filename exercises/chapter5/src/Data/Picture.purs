@@ -85,8 +85,6 @@ union (Bounds b1) (Bounds b2) = Bounds
   , right:  Math.max b1.right  b2.right
   }
 
-infixl 4 union as \/
-
 intersect :: Bounds -> Bounds -> Bounds
 intersect (Bounds b1) (Bounds b2) = Bounds
   { top:    Math.max b1.top    b2.top
@@ -94,8 +92,6 @@ intersect (Bounds b1) (Bounds b2) = Bounds
   , bottom: Math.min b1.bottom b2.bottom
   , right:  Math.min b1.right  b2.right
   }
-
-infixl 4 intersect as /\
 
 emptyBounds :: Bounds
 emptyBounds = Bounds
@@ -117,4 +113,4 @@ bounds :: Picture -> Bounds
 bounds = foldl combine emptyBounds
   where
   combine :: Bounds -> Shape -> Bounds
-  combine b shape = shapeBounds shape \/ b
+  combine b shape = union (shapeBounds shape) b

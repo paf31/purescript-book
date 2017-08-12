@@ -7,7 +7,7 @@ import Data.Function.Uncurried (Fn3, runFn3)
 import Data.Maybe (Maybe(..))
 import DOM (DOM)
 
-foreign import data Node :: *
+foreign import data Node :: Type
 
 foreign import querySelectorImpl
   :: forall eff r

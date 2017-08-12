@@ -35,7 +35,7 @@ treeOfInt = id
 
 main :: Eff ( console :: CONSOLE
             , random :: RANDOM
-            , err :: EXCEPTION
+            , exception :: EXCEPTION
             ) Unit
 main = do
   -- Tests for module 'Merge'

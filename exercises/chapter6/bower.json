@@ -14,13 +14,13 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-tuples": "^3.0.0",
-    "purescript-either": "^2.0.0",
-    "purescript-strings": "^2.0.0",
-    "purescript-console": "^2.0.0",
-    "purescript-functions": "^2.0.0"
+    "purescript-tuples": "^4.0.0",
+    "purescript-either": "^3.0.0",
+    "purescript-strings": "^3.0.0",
+    "purescript-console": "^3.0.0",
+    "purescript-functions": "^3.0.0"
   },
   "devDependencies": {
-    "purescript-psci-support": "^2.0.0"
+    "purescript-psci-support": "^3.0.0"
   }
 }

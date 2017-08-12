@@ -11,9 +11,8 @@ import Data.Array ((..), length, modifyAt, zipWith)
 import Data.Either (Either(..))
 import Data.Foldable (for_)
 import Data.Foreign (ForeignError, readString, toForeign)
-import Data.Foreign.Index (prop)
+import Data.Foreign.Index (index)
 import Data.Maybe (fromJust, fromMaybe)
-import Data.Nullable (toMaybe)
 import Data.List.NonEmpty (NonEmptyList)
 import DOM (DOM())
 import DOM.HTML (window)
@@ -41,8 +40,8 @@ initialState = AppState
 
 valueOf :: Event -> Either (NonEmptyList ForeignError) String
 valueOf e = runExcept do
-  target <- prop "target" (toForeign e)
-  value <- prop "value" target
+  target <- index (toForeign e) "target"
+  value <- index target "value"
   readString value
 
 updateAppState
@@ -133,4 +132,4 @@ main = void do
   let component = D.div [] [ createFactory addressBook unit ]
   doc <- window >>= document
   ctr <- getElementById (ElementId "main") (documentToNonElementParentNode (htmlDocumentToDocument doc))
-  render component (unsafePartial fromJust (toMaybe ctr))
+  render component (unsafePartial fromJust ctr)

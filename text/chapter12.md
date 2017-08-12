@@ -92,7 +92,7 @@ _Note_: in practice, it is not necessary to write these functions by hand every 
 First, we need to gives types to `readFile` and `writeFile` using the FFI. Let's start by defining some type synonyms, and a new effect for file IO:
 
 ```haskell
-foreign import data FS :: !
+foreign import data FS :: Effect
 
 type ErrorCode = String
 type FilePath = String
@@ -269,7 +269,7 @@ X>
 X>     ```haskell
 X>     type Milliseconds = Int
 X>
-X>     foreign import data TIMEOUT :: !
+X>     foreign import data TIMEOUT :: Effect
 X>
 X>     setTimeoutCont
 X>       :: forall eff
@@ -345,7 +345,7 @@ We will recreate this simple example in PureScript using the `Async` monad.
 In the `Network.HTTP.Client` module, the `request` method is wrapped with a function `getImpl`:
 
 ```haskell
-foreign import data HTTP :: !
+foreign import data HTTP :: Effect
 
 type URI = String
 

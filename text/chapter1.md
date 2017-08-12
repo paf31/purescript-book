@@ -83,7 +83,7 @@ The software requirements for this book are minimal: the first chapter will guid
 
 The PureScript compiler itself can be downloaded as a binary distribution, or built from source on any system running an up-to-date installation of the GHC Haskell compiler, and we will walk through this process in the next chapter.
 
-The code in this version of the book is compatible with versions `0.10.*` of
+The code in this version of the book is compatible with versions `0.11.*` of
 the PureScript compiler.
 
 ## About You
@@ -135,7 +135,7 @@ If you get stuck at any point, there are a number of resources available online 
 
 - The PureScript IRC channel is a great place to chat about issues you may be having. Point your IRC client at irc.freenode.net, and connect to the #purescript channel.
 - The [PureScript website](http://purescript.org) contains links to several learning resources, including code samples, videos and other resources for beginners.
-- The [PureScript wiki](http://wiki.purescript.org) collects articles and examples on a wide variety of topics, written by PureScript developers and users.
+- The [PureScript documentation repository](https://github.com/purescript/documentation) collects articles and examples on a wide variety of topics, written by PureScript developers and users.
 - [Try PureScript!](http://try.purescript.org) is a website which allows users to compile PureScript code in the web browser, and contains several simple examples of code.
 - [Pursuit](http://pursuit.purescript.org) is a searchable database of PureScript types and functions.
 

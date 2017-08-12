@@ -20,7 +20,7 @@ import Node.Yargs.Setup (usage)
 runGame
   :: forall eff
    . GameEnvironment
-  -> Eff ( err :: EXCEPTION
+  -> Eff ( exception :: EXCEPTION
          , readline :: RL.READLINE
          , console :: CONSOLE
          | eff
@@ -33,7 +33,7 @@ runGame env = do
     lineHandler
       :: GameState
       -> String
-      -> Eff ( err :: EXCEPTION
+      -> Eff ( exception :: EXCEPTION
              , console :: CONSOLE
              , readline :: RL.READLINE
              | eff
@@ -51,7 +51,7 @@ runGame env = do
 
   pure unit
 
-main :: Eff ( err :: EXCEPTION
+main :: Eff ( exception :: EXCEPTION
             , console :: CONSOLE
             , readline :: RL.READLINE
             ) Unit
