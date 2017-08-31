@@ -549,7 +549,7 @@ The first argument to `Eff` is `(console :: CONSOLE, random :: RANDOM | eff)`. T
 
 The second argument to `Eff` is `Unit`, which is the return type of the computation.
 
-## Objects And Rows
+## Records And Rows
 
 Considering the kind of `Eff` allows us to make a deeper connection between extensible effects and records.
 
@@ -575,7 +575,7 @@ Note that the curly braces have been removed, and there is an extra `Record` con
 # Type -> Type
 ```
 
-That is, `Object` is a type constructor which takes a _row of types_ and constructs a type. This is what allows us to write row-polymorphic functions on records.
+That is, `Record` is a type constructor which takes a _row of types_ and constructs a type. This is what allows us to write row-polymorphic functions on records.
 
 The type system uses the same machinery to handle extensible effects as is used for row-polymorphic records (or _extensible records_). The only difference is the _kind_ of the types appearing in the labels. Records are parameterized by a row of types, and `Eff` is parameterized by a row of effects.
 
@@ -861,7 +861,7 @@ createClass
    . ReactSpec props state eff
   -> ReactClass props
 
-type Render props state eff =
+type Render props state eff
    = ReactThis props state
   -> Eff ( props :: ReactProps
          , refs :: ReactRefs Disallowed
