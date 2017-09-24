@@ -462,7 +462,7 @@ The `runExceptT` handler is used to run a computation of type `ExceptT e m a`.
 This API is similar to that provided by the `purescript-exceptions` package and the `Exception` effect. However, there are some important differences:
 
 - `Exception` uses actual JavaScript exceptions, whereas `ExceptT` models errors as a pure data structure.
-- The `Exception` effect only supports exceptions of one type, namely JavaScript's `Error` type, whereas `ExceptT` supports errors of type. In particular, we are free to define new error types.
+- The `Exception` effect only supports exceptions of one type, namely JavaScript's `Error` type, whereas `ExceptT` supports errors of any type. In particular, we are free to define new error types.
 
 Let's try out `ExceptT` by using it to wrap the `Writer` monad. Again, we are free to use actions from the monad transformer `ExceptT e` directly, but computations in the `Writer` monad should be lifted using `lift`:
 
