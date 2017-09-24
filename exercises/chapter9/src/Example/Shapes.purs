@@ -26,18 +26,18 @@ main = void $ unsafePartial do
   Just canvas <- getCanvasElementById "canvas"
   ctx <- getContext2D canvas
 
-  setFillStyle "#0000FF" ctx
+  _ <- setFillStyle "#0000FF" ctx
 
-  fillPath ctx $ rect ctx $ translate (-200.0) (-200.0)
+  _ <- fillPath ctx $ rect ctx $ translate (-200.0) (-200.0)
     { x: 250.0
     , y: 250.0
     , w: 100.0
     , h: 100.0
     }
 
-  setFillStyle "#00FF00" ctx
+  _ <- setFillStyle "#00FF00" ctx
 
-  fillPath ctx $ arc ctx $ translate 200.0 200.0
+  _ <- fillPath ctx $ arc ctx $ translate 200.0 200.0
     { x: 300.0
     , y: 300.0
     , r: 50.0
@@ -45,10 +45,10 @@ main = void $ unsafePartial do
     , end: Math.pi * 2.0
     }
 
-  setFillStyle "#FF0000" ctx
+  _ <- setFillStyle "#FF0000" ctx
 
   fillPath ctx $ do
-    moveTo ctx 300.0 260.0
-    lineTo ctx 260.0 340.0
-    lineTo ctx 340.0 340.0
+    _ <- moveTo ctx 300.0 260.0
+    _ <- lineTo ctx 260.0 340.0
+    _ <- lineTo ctx 340.0 340.0
     closePath ctx

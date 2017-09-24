@@ -17,8 +17,8 @@ main = void $ unsafePartial do
   Just canvas <- getCanvasElementById "canvas"
   ctx <- getContext2D canvas
 
-  setFillStyle "#FF0000" ctx
-  setStrokeStyle "#000000" ctx
+  _ <- setFillStyle "#FF0000" ctx
+  _ <- setStrokeStyle "#000000" ctx
 
   for_ (1 .. 100) \_ -> do
     x <- random
@@ -33,5 +33,5 @@ main = void $ unsafePartial do
          , end   : Math.pi * 2.0
          }
 
-    fillPath ctx path
+    _ <- fillPath ctx path
     strokePath ctx path
