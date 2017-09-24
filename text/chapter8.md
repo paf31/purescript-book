@@ -505,7 +505,7 @@ This time we have to choose `eff2` to be `(random :: RANDOM | eff)`.
 
 The point is that the types of `random` and `logShow` indicate the side-effects which they contain, but in such a way that other side-effects can be _mixed-in_, to build larger computations with larger sets of side-effects.
 
-Note that we don't have to give a type for `main`. `psc` will find a most general type for `main` given the polymorphic types of `random` and `logShow`.
+Note that we don't have to give a type for `main`. The compiler will find a most general type for `main` given the polymorphic types of `random` and `logShow`.
 
 ## The Kind of Eff
 
@@ -750,7 +750,7 @@ simulate x0 v0 time = runPure $ runST do
   pure final.x
 ```
 
-then the `psc` compiler will notice that the reference cell is not allowed to escape its scope, and can safely turn it into a `var`. Here is the generated JavaScript for the body of the call to `runST`:
+then the compiler will notice that the reference cell is not allowed to escape its scope, and can safely turn it into a `var`. Here is the generated JavaScript for the body of the call to `runST`:
 
 ```javascript
 var ref = { x: x0, v: v0 };

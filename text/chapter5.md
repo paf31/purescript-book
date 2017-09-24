@@ -299,7 +299,7 @@ Functions which return a value for any combination of inputs are called _total_ 
 
 It is generally considered better to define total functions where possible. If it is known that a function does not return a result for some valid set of inputs, it is usually better to return a value with type `Maybe a` for some `a`, using `Nothing` to indicate failure. This way, the presence or absence of a value can be indicated in a type-safe way.
 
-The PureScript compiler will generate an error if it can detect that your function is not total due to an incomplete pattern match. The `unsafePartial` function can be used to silence these errors (if you are sure that your partial function is safe!) If we removed the call to the `unsafePartial` function above, then `psc` would generate the following error:
+The PureScript compiler will generate an error if it can detect that your function is not total due to an incomplete pattern match. The `unsafePartial` function can be used to silence these errors (if you are sure that your partial function is safe!) If we removed the call to the `unsafePartial` function above, then the compiler would generate the following error:
 
 ```text
 A case expression could not be determined to cover all inputs.
