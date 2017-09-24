@@ -241,7 +241,7 @@ copyFileCont
 copyFileCont src dest = do
   e <- readFileCont src
   case e of
-    Left err -> return $ Left err
+    Left err -> pure $ Left err
     Right content -> writeFileCont dest content
 ```
 
